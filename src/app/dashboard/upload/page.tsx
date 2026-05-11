@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Camera, Image as ImageIcon, X, Upload, Check, RotateCw, Settings } from "lucide-react";
+import { Camera, Image as ImageIcon, X, Upload, Check, RotateCw, Settings, Sparkles, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { processImage } from "@/lib/imagePipeline";
 import { useUIStore } from "@/lib/store";
@@ -154,7 +154,7 @@ export default function UploadPage() {
                 <p>Camera access is blocked. Please enable it in browser settings to take photos.</p>
               </div>
             )}
-            
+
             <div
               className={`flex flex-col items-center justify-center p-6 sm:p-20 border-2 border-dashed rounded-[1.5rem] sm:rounded-[2.5rem] transition-all cursor-pointer ${isDragging ? "border-white bg-text-primary/10 scale-[1.02]" : "border-border-color bg-background/40 hover:border-white/30"
                 }`}
@@ -183,13 +183,13 @@ export default function UploadPage() {
         ) : (
           <div className="relative w-full aspect-square sm:aspect-video bg-background/40 rounded-[2rem] overflow-hidden flex items-center justify-center border border-border-color shadow-inner group">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
-              src={preview} 
-              alt="Preview" 
-              className="max-h-full max-w-full object-contain filter drop-shadow-[0_0_50px_rgba(255,255,255,0.2)] transition-transform duration-500" 
+            <img
+              src={preview}
+              alt="Preview"
+              className="max-h-full max-w-full object-contain filter drop-shadow-[0_0_50px_rgba(255,255,255,0.2)] transition-transform duration-500"
               style={{ transform: `rotate(${rotation}deg)` }}
             />
-            
+
             <div className="absolute top-4 sm:top-6 right-4 sm:right-6 flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
               <button onClick={handleRemoveImage} className="bg-background/60 backdrop-blur-md border border-border-color/20 text-text-primary w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center hover:bg-background transition-all active:scale-90"><X className="w-5 h-5 sm:w-6 sm:h-6" /></button>
               <button onClick={handleRotate} className="bg-background/60 backdrop-blur-md border border-border-color/20 text-text-primary w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center hover:bg-background transition-all active:scale-90"><RotateCw className="w-5 h-5 sm:w-6 sm:h-6" /></button>
@@ -221,15 +221,15 @@ export default function UploadPage() {
                   </select>
                 ) : (
                   <div className="relative">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       list="clothing-types"
-                      value={type} 
-                      onChange={(e) => setType(e.target.value)} 
-                      placeholder="Type custom category..." 
-                      className="w-full bg-background border border-border-color rounded-2xl py-4 px-6 text-text-primary font-medium placeholder:text-text-muted/40" 
-                      autoFocus 
-                      required 
+                      value={type}
+                      onChange={(e) => setType(e.target.value)}
+                      placeholder="Type custom category..."
+                      className="w-full bg-background border border-border-color rounded-2xl py-4 px-6 text-text-primary font-medium placeholder:text-text-muted/40"
+                      autoFocus
+                      required
                     />
                     <datalist id="clothing-types">
                       {CLOTHING_TYPES.map(t => <option key={t} value={t} />)}
@@ -248,15 +248,15 @@ export default function UploadPage() {
                   </select>
                 ) : (
                   <div className="relative">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       list="clothing-colors"
-                      value={color} 
-                      onChange={(e) => setColor(e.target.value)} 
-                      placeholder="Type custom color..." 
-                      className="w-full bg-background border border-border-color rounded-2xl py-4 px-6 text-text-primary font-medium placeholder:text-text-muted/40" 
-                      autoFocus 
-                      required 
+                      value={color}
+                      onChange={(e) => setColor(e.target.value)}
+                      placeholder="Type custom color..."
+                      className="w-full bg-background border border-border-color rounded-2xl py-4 px-6 text-text-primary font-medium placeholder:text-text-muted/40"
+                      autoFocus
+                      required
                     />
                     <datalist id="clothing-colors">
                       {CLOTHING_COLORS.map(c => <option key={c} value={c} />)}
@@ -266,27 +266,32 @@ export default function UploadPage() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between p-5 sm:p-6 bg-text-primary/5 rounded-[1.5rem] sm:rounded-3xl border border-border-color/30 sm:col-span-2 hover:bg-text-primary/[0.08] transition-colors">
-                <div className="space-y-1">
-                  <p className="text-text-primary font-bold text-sm sm:text-base flex items-center gap-2">
-                    Remove Background
-                    <span className="px-1.5 py-0.5 bg-text-primary/10 text-[8px] font-black uppercase tracking-tighter rounded-md text-text-primary/60">AI Studio</span>
-                  </p>
-                  <p className="text-text-muted text-[10px] sm:text-xs font-medium">Isolate the item automatically</p>
+              <div className="relative group flex items-center justify-between p-6 sm:p-8 bg-text-primary/[0.03] dark:bg-white/[0.03] rounded-[2rem] sm:rounded-3xl border border-border-color/30 sm:col-span-2 hover:bg-text-primary/[0.05] dark:hover:bg-white/[0.05] transition-all duration-500 overflow-hidden shadow-sm hover:shadow-xl">
+                <div className="flex items-center gap-4 sm:gap-6">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shrink-0 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                    <Sparkles className="w-6 h-6 sm:w-7 sm:h-7" />
+                  </div>
+                  <div className="space-y-1 sm:space-y-1.5">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <p className="text-text-primary font-black text-base sm:text-xl uppercase tracking-tight leading-none">Remove Background</p>
+                      <span className="inline-flex items-center justify-center px-2.5 py-1 bg-text-primary/10 text-text-primary text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] rounded-lg border border-text-primary/10 leading-none h-4.5 sm:h-5">AI Studio</span>
+                    </div>
+                    <p className="text-text-muted text-[10px] sm:text-sm font-medium leading-none">Isolate the item automatically</p>
+                  </div>
                 </div>
                 <button 
                   type="button" 
                   onClick={() => setShouldRemoveBg(!shouldRemoveBg)} 
-                  className={`w-12 h-7 sm:w-14 sm:h-8 rounded-full transition-all relative border shrink-0 ${
+                  className={`w-14 h-8 sm:w-16 sm:h-9 rounded-full transition-all duration-500 relative border-2 shrink-0 ${
                     shouldRemoveBg 
-                      ? 'bg-text-primary border-text-primary shadow-[0_0_15px_rgba(var(--text-primary-rgb),0.3)]' 
-                      : 'bg-text-primary/10 border-text-primary/20'
+                      ? 'bg-[image:var(--gradient-primary)] dark:bg-none dark:bg-white border-transparent dark:border-white shadow-[0_0_15px_rgba(79,110,247,0.4)] dark:shadow-[0_0_20px_rgba(255,255,255,0.4)]' 
+                      : 'bg-text-primary/10 border-border-color'
                   }`}
                 >
-                  <div className={`absolute top-0.5 sm:top-1 w-5 h-5 sm:w-6 sm:h-6 rounded-full transition-all shadow-lg ${
+                  <div className={`absolute top-0.5 sm:top-1 w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full transition-all duration-500 shadow-xl ${
                     shouldRemoveBg 
-                      ? 'left-6 sm:left-7 bg-white' 
-                      : 'left-0.5 sm:left-1 bg-text-primary/40'
+                      ? 'left-6.5 sm:left-8 bg-white dark:bg-black' 
+                      : 'left-0.5 sm:left-1 bg-text-muted'
                   }`} />
                 </button>
               </div>
@@ -312,15 +317,15 @@ export default function UploadPage() {
                 </div>
                 {isCustomCategory && (
                   <div className="relative mt-4 animate-in fade-in slide-in-from-top-2">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       list="clothing-occasions"
-                      value={category} 
-                      onChange={(e) => setCategory(e.target.value)} 
-                      placeholder="Type custom occasion..." 
-                      className="w-full bg-background border border-border-color rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 text-text-primary font-medium focus:outline-none focus:border-text-primary/30 text-sm sm:text-base placeholder:text-text-muted/40" 
-                      autoFocus 
-                      required 
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      placeholder="Type custom occasion..."
+                      className="w-full bg-background border border-border-color rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 text-text-primary font-medium focus:outline-none focus:border-text-primary/30 text-sm sm:text-base placeholder:text-text-muted/40"
+                      autoFocus
+                      required
                     />
                     <datalist id="clothing-occasions">
                       {CLOTHING_OCCASIONS.map(o => <option key={o} value={o} />)}
@@ -345,8 +350,10 @@ export default function UploadPage() {
               </div>
             </div>
 
-            <button type="submit" disabled={!type || !color || !category} className="w-full rounded-[1.5rem] px-4 py-5 bg-text-primary text-background font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-text-primary/90 active:scale-95 transition-all disabled:opacity-30 shadow-2xl mt-10">
-              <Upload className="w-5 h-5" /> Save to Wardrobe
+            <button type="submit" disabled={!type || !color || !category} className="w-full rounded-[2rem] px-4 py-6 bg-text-primary text-background font-black text-xs sm:text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:bg-text-primary/90 active:scale-95 transition-all disabled:opacity-30 shadow-2xl mt-12 group overflow-hidden relative">
+              <div className="absolute inset-0 bg-white/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              <span className="relative z-10">Save to Wardrobe</span>
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5 relative z-10 group-hover:rotate-90 transition-transform duration-500" />
             </button>
           </form>
         )}
