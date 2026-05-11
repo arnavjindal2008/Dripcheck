@@ -15,6 +15,7 @@ export async function processImage(
 ): Promise<boolean> {
   try {
     setLoading(true, "Preparing studio...", "Studio Mode");
+    let finalFile = file;
     if (rotation !== 0) {
       setLoading(true, "Adjusting orientation...", "Studio Mode");
       finalFile = await rotateImage(finalFile, rotation);
