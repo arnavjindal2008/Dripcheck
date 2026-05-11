@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles, Bookmark, Calendar, CloudSun, Wand2, Plus, X, ArrowLeftRight, Check, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { Sparkles, Bookmark, Calendar, CloudSun, Wand2, Plus, X, ArrowLeftRight, Check, Trash2, History } from "lucide-react";
 import FilterDropdown from "@/components/FilterDropdown";
 import { ClothingItem } from "@/components/ClothingCard";
 import AvatarCanvas from "@/components/AvatarCanvas";
@@ -249,32 +250,47 @@ export default function OutfitsPage() {
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 pb-20">
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-        <div>
-          <h1 className="text-4xl font-black tracking-tight text-text-primary">Outfit Engine</h1>
-          <p className="text-text-muted mt-2 font-medium text-lg">Select your vibe and let AI do the rest.</p>
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 sm:gap-8">
+        <div className="flex justify-between items-start w-full lg:w-auto">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-text-primary uppercase tracking-tighter">Outfit Engine</h1>
+            <p className="text-text-muted mt-2 font-medium text-base sm:text-lg">Select your vibe and let AI do the rest.</p>
+          </div>
+          <Link 
+            href="/dashboard/history" 
+            className="lg:hidden w-12 h-12 rounded-2xl bg-text-primary/5 border border-border-color flex items-center justify-center text-text-primary hover:bg-text-primary/10 transition-all active:scale-90"
+            title="Saved Outfits"
+          >
+            <History className="w-6 h-6" />
+          </Link>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto relative z-40">
-          <FilterDropdown
-            label="Occasion"
-            icon={<Calendar className="w-3.5 h-3.5" />}
-            value={selectedCategory}
-            onChange={setSelectedCategory}
-            options={dynamicCategoryOptions}
-          />
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto relative z-40">
+          <div className="flex overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 items-center gap-3 w-full sm:w-auto pb-2 sm:pb-0">
+            <div className="shrink-0">
+              <FilterDropdown
+                label="Occasion"
+                icon={<Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
+                value={selectedCategory}
+                onChange={setSelectedCategory}
+                options={dynamicCategoryOptions}
+              />
+            </div>
 
-          <FilterDropdown
-            label="Weather"
-            icon={<CloudSun className="w-3.5 h-3.5" />}
-            value={selectedWeather}
-            onChange={setSelectedWeather}
-            options={dynamicWeatherOptions}
-          />
+            <div className="shrink-0">
+              <FilterDropdown
+                label="Weather"
+                icon={<CloudSun className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
+                value={selectedWeather}
+                onChange={setSelectedWeather}
+                options={dynamicWeatherOptions}
+              />
+            </div>
+          </div>
 
           <button
             onClick={generateOutfits}
-            className="flex items-center gap-3 bg-text-primary text-background px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/5 group h-[52px]"
+            className="flex items-center justify-center gap-3 bg-text-primary text-background w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl font-black text-[9px] sm:text-[10px] uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/5 group h-[48px] sm:h-[52px]"
           >
             <Wand2 className="w-4 h-4 group-hover:rotate-12 transition-transform" /> Style Me
           </button>
@@ -357,31 +373,31 @@ export default function OutfitsPage() {
 
           {/* Floating Comparison Bar */}
           {selectedForComparison.length > 0 && (
-            <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-[90%] max-w-2xl bg-text-primary text-background rounded-3xl p-4 shadow-2xl z-[60] flex items-center justify-between animate-in slide-in-from-bottom-10 fade-in duration-500 border border-white/10 backdrop-blur-xl">
-              <div className="flex items-center gap-4 px-4">
-                <div className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center border border-white/5">
-                  <ArrowLeftRight className="w-5 h-5" />
+            <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-[calc(100%-1.5rem)] max-w-2xl bg-text-primary text-background rounded-[2rem] sm:rounded-3xl p-3 sm:p-4 shadow-2xl z-[60] flex items-center justify-between animate-in slide-in-from-bottom-10 fade-in duration-500 border border-white/10 backdrop-blur-xl">
+              <div className="flex items-center gap-3 sm:gap-4 px-2 sm:px-4">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-background/10 flex items-center justify-center border border-white/5 shrink-0">
+                  <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
-                  <p className="font-black text-[10px] uppercase tracking-widest leading-none">Comparison Pool</p>
-                  <p className="text-[14px] font-bold mt-1 opacity-70">{selectedForComparison.length} styles selected</p>
+                  <p className="font-black text-[8px] sm:text-[10px] uppercase tracking-widest leading-none">Pool</p>
+                  <p className="text-[12px] sm:text-[14px] font-bold mt-0.5 sm:mt-1 opacity-70 whitespace-nowrap">{selectedForComparison.length} selected</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <button
                   onClick={() => setSelectedForComparison([])}
-                  className="p-3 hover:bg-background/10 rounded-xl transition-all"
+                  className="p-2 sm:p-3 hover:bg-background/10 rounded-xl transition-all"
                   title="Clear Selection"
                 >
-                  <Trash2 className="w-5 h-5 opacity-60" />
+                  <Trash2 className="w-4 h-4 sm:w-5 sm:h-5 opacity-60" />
                 </button>
                 <button
                   onClick={() => setIsCompareMode(true)}
                   disabled={selectedForComparison.length < 2}
-                  className="bg-background text-text-primary px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl disabled:opacity-50 disabled:scale-100"
+                  className="bg-background text-text-primary px-4 sm:px-8 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[9px] sm:text-[10px] uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl disabled:opacity-50 disabled:scale-100"
                 >
-                  Compare Options
+                  Compare
                 </button>
               </div>
             </div>

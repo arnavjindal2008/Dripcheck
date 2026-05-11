@@ -10,16 +10,20 @@ export async function processImage(
   weather: string,
   removeBg: boolean,
   setLoading: (val: boolean, message?: string, title?: string) => void,
-  toast: (msg: string, type?: "success" | "error" | "info") => void
+  toast: (msg: string, type?: "success" | "error" | "info") => void,
+  rotation: number = 0
 ): Promise<boolean> {
   try {
     setLoading(true, "Preparing studio...", "Studio Mode");
-    let finalFile = file;
+    if (rotation !== 0) {
+      setLoading(true, "Adjusting orientation...", "Studio Mode");
+      finalFile = await rotateImage(finalFile, rotation);
+    }
 
     if (removeBg) {
       setLoading(true, "Removing background...", "AI Studio");
       const formData = new FormData();
-      formData.append('image_file', file);
+      formData.append('image_file', finalFile);
       formData.append('size', 'auto');
 
       const { success, base64, type: blobType, error: bgError } = await processBackgroundRemoval(formData);
@@ -137,6 +141,30 @@ async function processFinalImage(file: File): Promise<File> {
         resolve(blob ? new File([blob], `${baseName}.jpg`, { type: "image/jpeg" }) : file);
       }, "image/jpeg", 0.85);
     }
+  });
+}
+
+async function rotateImage(file: File, rotation: number): Promise<File> {
+  const img = await loadImage(file);
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d")!;
+
+  if (rotation % 180 === 0) {
+    canvas.width = img.width;
+    canvas.height = img.height;
+  } else {
+    canvas.width = img.height;
+    canvas.height = img.width;
+  }
+
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.rotate((rotation * Math.PI) / 180);
+  ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      resolve(blob ? new File([blob], file.name, { type: file.type }) : file);
+    }, file.type, 0.95);
   });
 }
 

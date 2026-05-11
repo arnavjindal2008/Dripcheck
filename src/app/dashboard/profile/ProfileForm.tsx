@@ -145,12 +145,12 @@ export default function ProfileForm({
 
   return (
     <>
-      <div className="bg-text-primary/5 backdrop-blur-lg border border-border-color rounded-[2.5rem] p-8 sm:p-12 mt-8 shadow-2xl">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="w-12 h-12 rounded-2xl bg-text-primary/10 flex items-center justify-center text-text-primary border border-border-color shadow-lg">
-            <User className="w-6 h-6" />
+      <div className="bg-text-primary/5 backdrop-blur-lg border border-border-color rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-12 mt-8 shadow-2xl">
+        <div className="flex items-center gap-4 mb-8 sm:mb-10">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-text-primary/10 flex items-center justify-center text-text-primary border border-border-color shadow-lg">
+            <User className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <h2 className="text-3xl font-black text-text-primary tracking-tight">Edit Profile</h2>
+          <h2 className="text-2xl sm:text-3xl font-black text-text-primary tracking-tight uppercase tracking-tighter">Edit Profile</h2>
         </div>
         
         {message && <div className="p-4 mb-8 bg-green-500/10 border border-green-500/20 text-green-400 rounded-2xl text-sm font-bold animate-in fade-in slide-in-from-top-4">{message}</div>}
@@ -158,32 +158,40 @@ export default function ProfileForm({
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
-            <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-2 mb-4 block">Avatar</label>
-            <div className="flex flex-col sm:flex-row items-center gap-8 bg-text-primary/5 p-6 rounded-[2rem] border border-white/5">
-              {avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={avatarUrl} alt="Avatar" className="w-24 h-24 rounded-full object-cover border-2 border-border-color/20 shadow-2xl" />
-              ) : (
-                <div className="w-24 h-24 rounded-full bg-background/50 border border-border-color flex items-center justify-center shadow-inner">
-                  <User className="w-10 h-10 text-text-primary/10" />
-                </div>
-              )}
-              <div className="relative">
+            <label className="text-[9px] sm:text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 sm:ml-2 mb-3 sm:mb-4 block">Avatar / Profile Photo</label>
+            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 bg-text-primary/5 p-5 sm:p-6 rounded-[2rem] sm:rounded-3xl border border-white/5">
+              <div className="relative group/avatar">
+                {avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={avatarUrl} alt="Avatar" className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-border-color/20 shadow-2xl transition-transform duration-500 group-hover/avatar:scale-105" />
+                ) : (
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-background/50 border border-border-color flex items-center justify-center shadow-inner">
+                    <User className="w-8 h-8 sm:w-10 sm:h-10 text-text-primary/10" />
+                  </div>
+                )}
+                {isUploading && (
+                  <div className="absolute inset-0 bg-background/60 backdrop-blur-sm rounded-full flex items-center justify-center animate-in fade-in">
+                    <Loader2 className="w-6 h-6 animate-spin text-text-primary" />
+                  </div>
+                )}
+              </div>
+              <div className="relative w-full sm:w-auto">
                 <input 
                   type="file" 
                   accept="image/*" 
                   onChange={handleAvatarUpload}
                   disabled={isUploading || isPending}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed z-10"
                 />
                 <button 
                   type="button" 
                   disabled={isUploading || isPending}
-                  className="bg-text-primary text-background px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-text-primary/90 flex items-center gap-2 disabled:opacity-50 transition-all shadow-xl"
+                  className="w-full sm:w-auto bg-text-primary text-background px-8 py-3.5 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest hover:bg-text-primary/90 flex items-center justify-center gap-2 disabled:opacity-50 transition-all shadow-xl active:scale-95"
                 >
-                  {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  {!isUploading && <Upload className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
                   {isUploading ? "Uploading..." : "Update Image"}
                 </button>
+                <p className="text-[8px] text-text-muted text-center mt-3 sm:hidden font-bold uppercase tracking-widest opacity-60">Tap to change photo</p>
               </div>
             </div>
           </div>
@@ -289,30 +297,30 @@ export default function ProfileForm({
             <button 
               type="submit" 
               disabled={isPending || isUploading}
-              className="flex-1 bg-text-primary text-background px-8 py-5 rounded-[1.5rem] font-black text-sm uppercase tracking-widest hover:bg-text-primary/90 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50 shadow-2xl"
+              className="w-full sm:flex-1 bg-text-primary text-background px-8 py-4 sm:py-5 rounded-xl sm:rounded-[1.5rem] font-black text-xs sm:text-sm uppercase tracking-widest hover:bg-text-primary/90 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50 shadow-2xl"
             >
-              {isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Changes"}
+              {isPending ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" /> : "Save Changes"}
             </button>
             
             <button 
               type="button"
               onClick={() => setShowLogoutConfirm(true)}
               disabled={isPending}
-              className="sm:w-auto bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20 px-8 py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3"
+              className="w-full sm:w-auto bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20 px-8 py-4 sm:py-5 rounded-xl sm:rounded-[1.5rem] font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3"
             >
-              <LogOut className="w-5 h-5" /> Logout
+              <LogOut className="w-4 h-4 sm:w-5 sm:h-5" /> Logout
             </button>
           </div>
         </form>
       </div>
 
       {/* Security Section */}
-      <div className="bg-text-primary/5 backdrop-blur-lg border border-border-color rounded-[2.5rem] p-8 sm:p-12 mt-8 shadow-2xl">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="w-12 h-12 rounded-2xl bg-text-primary/10 flex items-center justify-center text-text-primary border border-border-color shadow-lg">
-            <ShieldCheck className="w-6 h-6" />
+      <div className="bg-text-primary/5 backdrop-blur-lg border border-border-color rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-12 mt-8 shadow-2xl">
+        <div className="flex items-center gap-4 mb-8 sm:mb-10">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-text-primary/10 flex items-center justify-center text-text-primary border border-border-color shadow-lg">
+            <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <h2 className="text-3xl font-black text-text-primary tracking-tight">Security</h2>
+          <h2 className="text-2xl sm:text-3xl font-black text-text-primary tracking-tight uppercase tracking-tighter">Security</h2>
         </div>
 
         {securityMessage && <div className="p-4 mb-8 bg-green-500/10 border border-green-500/20 text-green-400 rounded-2xl text-sm font-bold animate-in fade-in slide-in-from-top-4">{securityMessage}</div>}
@@ -364,9 +372,9 @@ export default function ProfileForm({
             <button 
               type="submit" 
               disabled={isChangingPassword || !newPassword}
-              className="w-full sm:w-auto bg-text-primary/10 border border-border-color text-text-primary px-8 py-5 rounded-[1.5rem] font-black text-sm uppercase tracking-widest hover:bg-text-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-30 shadow-2xl"
+              className="w-full sm:w-auto bg-text-primary/10 border border-border-color text-text-primary px-8 py-4 sm:py-5 rounded-xl sm:rounded-[1.5rem] font-black text-[10px] sm:text-sm uppercase tracking-widest hover:bg-text-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-30 shadow-2xl"
             >
-              {isChangingPassword ? <Loader2 className="w-5 h-5 animate-spin" /> : "Update Password"}
+              {isChangingPassword ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" /> : "Update Password"}
             </button>
           </div>
         </form>

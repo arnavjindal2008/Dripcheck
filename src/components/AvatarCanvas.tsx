@@ -8,6 +8,7 @@ type AvatarProps = {
   top?: ClothingItem;
   bottom?: ClothingItem;
   shoes?: ClothingItem;
+  minimal?: boolean;
 };
 
 // LAYERING ENGINE
@@ -32,11 +33,13 @@ function getLayer(item?: ClothingItem): string {
   return "z-20"; // main
 }
 
-const AvatarCanvas = ({ top, bottom, shoes }: AvatarProps) => {
+const AvatarCanvas = ({ top, bottom, shoes, minimal = false }: AvatarProps) => {
   const isOP = isOnePiece(top);
 
   return (
-    <div className="relative w-full aspect-[3/4] bg-text-primary/5 border border-border-color rounded-2xl overflow-hidden flex items-center justify-center shadow-inner group transition-all duration-300">
+    <div className={`relative w-full aspect-[3/4] flex items-center justify-center transition-all duration-300 ${
+      minimal ? "" : "bg-text-primary/5 border border-border-color rounded-2xl shadow-inner overflow-hidden group"
+    }`}>
 
       {/* Silhouette Removed */}
 

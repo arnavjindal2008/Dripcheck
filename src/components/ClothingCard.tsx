@@ -200,16 +200,16 @@ export default function ClothingCard({
               <h3 className="text-xs sm:text-sm font-black text-text-primary/90 uppercase tracking-tight flex-1 leading-tight line-clamp-2">
                 {item.name || `${item.color} ${item.type}`}
               </h3>
-              <span className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[7px] sm:text-[9px] font-black border uppercase tracking-widest leading-none shrink-0 ${item.status === 'available' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-orange-500/10 text-orange-400 border-orange-500/20'}`}>
+              <span className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-black border uppercase tracking-widest leading-none shrink-0 ${item.status === 'available' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-orange-500/10 text-orange-400 border-orange-500/20'}`}>
                 {item.status}
               </span>
             </div>
           </div>
-          <div className="flex flex-wrap gap-1 sm:gap-2 mt-auto">
-            <span className="px-2 sm:px-3 py-1 bg-text-primary/5 border border-border-color text-text-muted text-[7px] sm:text-[9px] font-black rounded-lg uppercase tracking-wider whitespace-nowrap">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-auto">
+            <span className="px-2 sm:px-3 py-1 bg-text-primary/5 border border-border-color text-text-muted text-[8px] sm:text-[9px] font-black rounded-lg uppercase tracking-wider whitespace-nowrap">
               {item.category === 'all' ? 'Any' : item.category}
             </span>
-            <span className="px-2 sm:px-3 py-1 bg-text-primary/5 border border-border-color text-text-muted text-[7px] sm:text-[9px] font-black rounded-lg uppercase tracking-wider whitespace-nowrap">
+            <span className="px-2 sm:px-3 py-1 bg-text-primary/5 border border-border-color text-text-muted text-[8px] sm:text-[9px] font-black rounded-lg uppercase tracking-wider whitespace-nowrap">
               {(!item.weather || item.weather === 'all') ? 'All' : (item.weather.includes(',') ? 'Multi' : item.weather)}
             </span>
           </div>
@@ -218,10 +218,10 @@ export default function ClothingCard({
 
       {showMenu && typeof document !== "undefined" && createPortal(
         <div className="md:hidden fixed inset-0 z-[9999] flex items-end justify-center bg-background/80 backdrop-blur-md p-4 animate-in fade-in duration-300" onClick={() => setShowMenu(false)}>
-          <div className="w-full max-w-sm bg-background-secondary border border-border-color rounded-[3rem] p-8 pb-10 shadow-2xl animate-in slide-in-from-bottom-20 duration-500 ease-out" onClick={(e) => e.stopPropagation()}>
-            <div className="w-16 h-1.5 bg-text-primary/10 rounded-full mx-auto mb-10" />
-            <h4 className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] text-center mb-6">Quick Actions</h4>
-            <div className="space-y-3">
+          <div className="w-full max-w-sm bg-background-secondary border border-border-color rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-8 pb-10 shadow-2xl animate-in slide-in-from-bottom-20 duration-500 ease-out" onClick={(e) => e.stopPropagation()}>
+            <div className="w-12 h-1 bg-text-primary/10 rounded-full mx-auto mb-8" />
+            <h4 className="text-text-muted text-[9px] font-black uppercase tracking-[0.2em] text-center mb-6">Quick Actions</h4>
+            <div className="space-y-2.5 sm:space-y-3">
               <button 
                 onClick={() => { setShowMenu(false); setIsEditing(true); }}
                 className="w-full flex items-center justify-between px-6 py-5 bg-text-primary/5 rounded-3xl border border-white/5 active:scale-95 transition-all text-text-primary font-bold"
@@ -258,7 +258,7 @@ export default function ClothingCard({
 
               <button 
                 onClick={() => { setShowDeleteConfirm(item.id); setShowMenu(false); }}
-                className="w-full flex items-center justify-between px-6 py-5 bg-red-500/10 rounded-3xl border border-red-500/10 active:scale-95 transition-all text-red-400 font-bold"
+                className="w-full flex items-center justify-between px-5 sm:px-6 py-4 sm:py-5 bg-red-500/10 rounded-[1.5rem] sm:rounded-3xl border border-red-500/10 active:scale-95 transition-all text-red-400 font-bold"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-2xl bg-red-500/20 flex items-center justify-center"><Trash2 className="w-5 h-5" /></div>
@@ -297,26 +297,26 @@ export default function ClothingCard({
             <div className="sm:hidden w-16 h-1.5 bg-text-primary/10 rounded-full mx-auto mb-8" />
             <button onClick={() => setIsEditing(false)} className="hidden sm:flex absolute top-8 right-8 w-12 h-12 items-center justify-center rounded-2xl bg-text-primary/5 hover:bg-text-primary/10 text-text-muted hover:text-text-primary transition-all active:scale-90"><X className="w-6 h-6" /></button>
             
-            <div className="flex items-center justify-between mb-10">
-              <h2 className="text-3xl sm:text-4xl font-black text-text-primary uppercase tracking-tighter leading-none">Edit Item</h2>
-              <button onClick={() => setIsEditing(false)} className="sm:hidden px-4 py-2 rounded-xl bg-text-primary/5 text-text-muted text-[10px] font-black uppercase tracking-widest">Close</button>
+            <div className="flex items-center justify-between mb-8 sm:mb-10">
+              <h2 className="text-2xl sm:text-4xl font-black text-text-primary uppercase tracking-tighter leading-none">Edit Item</h2>
+              <button onClick={() => setIsEditing(false)} className="sm:hidden px-3 py-1.5 rounded-lg bg-text-primary/5 text-text-muted text-[9px] font-black uppercase tracking-widest">Close</button>
             </div>
 
             <form onSubmit={handleEditSubmit} className="space-y-8">
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-2 block">Name</label>
-                <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="w-full bg-background/50 border border-border-color rounded-3xl px-8 py-6 text-text-primary text-lg focus:outline-none focus:border-white/40 transition-all font-bold shadow-inner" required />
+              <div className="space-y-3 sm:space-y-4">
+                <label className="text-[9px] sm:text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 sm:ml-2 block">Name</label>
+                <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="w-full bg-background/50 border border-border-color rounded-2xl sm:rounded-3xl px-6 sm:px-8 py-4 sm:py-6 text-text-primary text-base sm:text-lg focus:outline-none focus:border-white/40 transition-all font-bold shadow-inner" required />
               </div>
 
               <div className="grid grid-cols-2 gap-6 sm:gap-8">
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-2 block">Category</label>
+                <div className="space-y-3 sm:space-y-4">
+                  <label className="text-[9px] sm:text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 sm:ml-2 block">Category</label>
                   {!isCustomType ? (
                     <div className="relative group/sel">
-                      <select value={editType} onChange={(e) => { if (e.target.value === "custom") { setIsCustomType(true); setEditType(""); } else { setEditType(e.target.value); } }} className="w-full bg-white/[0.03] border border-border-color rounded-3xl px-6 py-5 text-text-primary appearance-none font-bold cursor-pointer hover:bg-text-primary/5 transition-all" required>
+                      <select value={editType} onChange={(e) => { if (e.target.value === "custom") { setIsCustomType(true); setEditType(""); } else { setEditType(e.target.value); } }} className="w-full bg-white/[0.03] border border-border-color rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-4 sm:py-5 text-text-primary appearance-none font-bold cursor-pointer hover:bg-text-primary/5 transition-all text-sm sm:text-base" required>
                         <option value="top">Top</option><option value="bottom">Bottom</option><option value="one-piece">One-piece</option><option value="shoes">Shoes</option><option value="custom">Custom...</option>
                       </select>
-                      <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none group-hover/sel:text-text-primary/60 transition-colors" />
+                      <ChevronDown className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none group-hover/sel:text-text-primary/60 transition-colors" />
                     </div>
                   ) : (
                     <div className="relative animate-in zoom-in-95 duration-300">
@@ -326,7 +326,7 @@ export default function ClothingCard({
                         value={editType} 
                         onChange={(e) => setEditType(e.target.value)} 
                         placeholder="Type..." 
-                        className="w-full bg-white/[0.03] border border-border-color/20 rounded-3xl px-6 py-5 text-text-primary font-bold focus:outline-none focus:border-white/40" 
+                        className="w-full bg-white/[0.03] border border-border-color/20 rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-4 sm:py-5 text-text-primary font-bold focus:outline-none focus:border-white/40 text-sm sm:text-base" 
                         autoFocus 
                         required 
                       />
@@ -337,14 +337,14 @@ export default function ClothingCard({
                     </div>
                   )}
                 </div>
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-2 block">Color</label>
+                <div className="space-y-3 sm:space-y-4">
+                  <label className="text-[9px] sm:text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 sm:ml-2 block">Color</label>
                   {!isCustomColor ? (
                     <div className="relative group/sel">
-                      <select value={editColor} onChange={(e) => { if (e.target.value === "custom") { setIsCustomColor(true); setEditColor(""); } else { setEditColor(e.target.value); } }} className="w-full bg-white/[0.03] border border-border-color rounded-3xl px-6 py-5 text-text-primary appearance-none font-bold cursor-pointer hover:bg-text-primary/5 transition-all" required>
+                      <select value={editColor} onChange={(e) => { if (e.target.value === "custom") { setIsCustomColor(true); setEditColor(""); } else { setEditColor(e.target.value); } }} className="w-full bg-white/[0.03] border border-border-color rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-4 sm:py-5 text-text-primary appearance-none font-bold cursor-pointer hover:bg-text-primary/5 transition-all text-sm sm:text-base" required>
                         <option value="black">Black</option><option value="white">White</option><option value="blue">Blue</option><option value="red">Red</option><option value="green">Green</option><option value="custom">Other...</option>
                       </select>
-                      <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none group-hover/sel:text-text-primary/60 transition-colors" />
+                      <ChevronDown className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none group-hover/sel:text-text-primary/60 transition-colors" />
                     </div>
                   ) : (
                     <div className="relative animate-in zoom-in-95 duration-300">
@@ -354,7 +354,7 @@ export default function ClothingCard({
                         value={editColor} 
                         onChange={(e) => setEditColor(e.target.value)} 
                         placeholder="Color..." 
-                        className="w-full bg-white/[0.03] border border-border-color/20 rounded-3xl px-6 py-5 text-text-primary font-bold focus:outline-none focus:border-white/40" 
+                        className="w-full bg-white/[0.03] border border-border-color/20 rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-4 sm:py-5 text-text-primary font-bold focus:outline-none focus:border-white/40 text-sm sm:text-base" 
                         autoFocus 
                         required 
                       />
@@ -367,8 +367,8 @@ export default function ClothingCard({
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-2 block">Occasion</label>
+              <div className="space-y-3 sm:space-y-4">
+                <label className="text-[9px] sm:text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 sm:ml-2 block">Occasion</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { label: 'Any', value: 'all' },
@@ -378,11 +378,11 @@ export default function ClothingCard({
                     { label: 'Street', value: 'streetwear' },
                     { label: 'Gym', value: 'athletic' }
                   ].map(cat => (
-                    <button key={cat.value} type="button" onClick={() => { setEditCategory(cat.value); setIsCustomCategory(false); }} className={`py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all ${editCategory === cat.value && !isCustomCategory ? 'bg-text-primary text-background border-white shadow-xl scale-105' : 'bg-white/[0.03] text-text-muted border-white/5 hover:border-border-color/20'}`}>
+                    <button key={cat.value} type="button" onClick={() => { setEditCategory(cat.value); setIsCustomCategory(false); }} className={`py-3.5 sm:py-4 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest border transition-all ${editCategory === cat.value && !isCustomCategory ? 'bg-text-primary text-background border-white shadow-xl scale-105' : 'bg-white/[0.03] text-text-muted border-white/5 hover:border-border-color/20'}`}>
                       {cat.label}
                     </button>
                   ))}
-                  <button type="button" onClick={() => { setIsCustomCategory(true); setEditCategory(""); }} className={`py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all ${isCustomCategory ? 'bg-text-primary text-background border-white shadow-xl scale-105' : 'bg-white/[0.03] text-text-muted border-white/5 hover:border-border-color/20'}`}>
+                  <button type="button" onClick={() => { setIsCustomCategory(true); setEditCategory(""); }} className={`py-3.5 sm:py-4 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest border transition-all ${isCustomCategory ? 'bg-text-primary text-background border-white shadow-xl scale-105' : 'bg-white/[0.03] text-text-muted border-white/5 hover:border-border-color/20'}`}>
                     Custom
                   </button>
                 </div>
@@ -406,15 +406,15 @@ export default function ClothingCard({
                 )}
               </div>
 
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-2 block">Seasons</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button type="button" onClick={setAllWeather} className={`col-span-2 py-5 rounded-3xl text-[10px] font-black uppercase tracking-widest border transition-all flex items-center justify-center gap-3 ${editWeather.includes('all') ? 'bg-text-primary text-background border-white shadow-xl scale-[1.02]' : 'bg-white/[0.03] text-text-muted border-white/5 hover:border-border-color/20'}`}>
-                    {editWeather.includes('all') && <Check className="w-4 h-4" />} All Seasons
+              <div className="space-y-3 sm:space-y-4">
+                <label className="text-[9px] sm:text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 sm:ml-2 block">Seasons</label>
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                  <button type="button" onClick={setAllWeather} className={`col-span-2 py-4 sm:py-5 rounded-2xl sm:rounded-3xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest border transition-all flex items-center justify-center gap-2 sm:gap-3 ${editWeather.includes('all') ? 'bg-text-primary text-background border-white shadow-xl scale-[1.02]' : 'bg-white/[0.03] text-text-muted border-white/5 hover:border-border-color/20'}`}>
+                    {editWeather.includes('all') && <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />} All Seasons
                   </button>
                   {SEASONS.map(s => (
-                    <button key={s.id} type="button" onClick={() => toggleWeather(s.id)} className={`py-5 rounded-3xl text-[10px] font-black uppercase tracking-widest border transition-all flex items-center justify-center gap-3 ${editWeather.includes(s.id) ? 'bg-text-primary text-background border-white shadow-xl scale-[1.02]' : 'bg-white/[0.03] text-text-muted border-white/5 hover:border-border-color/20'}`}>
-                      {editWeather.includes(s.id) && <Check className="w-4 h-4" />} {s.label}
+                    <button key={s.id} type="button" onClick={() => toggleWeather(s.id)} className={`py-4 sm:py-5 rounded-2xl sm:rounded-3xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest border transition-all flex items-center justify-center gap-2 sm:gap-3 ${editWeather.includes(s.id) ? 'bg-text-primary text-background border-white shadow-xl scale-[1.02]' : 'bg-white/[0.03] text-text-muted border-white/5 hover:border-border-color/20'}`}>
+                      {editWeather.includes(s.id) && <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />} {s.label}
                     </button>
                   ))}
                 </div>
