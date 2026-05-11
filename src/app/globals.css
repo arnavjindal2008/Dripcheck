@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+:root,
+.dark {
+  --background: #050505;
+  --background-secondary: #0a0a0a;
+  --card-background: #111111;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --accent-primary: #D4AF37;
+  --accent-hover: #B8902E;
+  --success: #10B981;
+  --error: #EF4444;
+  --favorite: #FF2D55;
+  --favorite-light: rgba(255, 45, 85, 0.15);
+  --shadow-custom: 0 20px 50px rgba(0, 0, 0, 0.5);
+
+  /* Retain original for tailwind */
+  --foreground: #ffffff;
+  --card: #111111;
+  --card-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --radius: 0.75rem;
+
+  /* Premium Gradients */
+  --gradient-primary: linear-gradient(135deg, #4F6EF7 0%, #6D8BFF 50%, #7C3AED 100%);
+  --gradient-hero: linear-gradient(135deg, #111111 0%, #1a1a2e 50%, #161122 100%);
+  --gradient-card: linear-gradient(135deg, rgba(79, 110, 247, 0.1), rgba(124, 58, 237, 0.1));
+}
+
+.light {
+  /* Background Colors */
+  --background: #F8FAFF;
+  /* Soft cool white */
+  --background-secondary: #EEF3FF;
+  /* Very light blue */
+  --card-background: #FFFFFF;
+  /* Pure white */
+  --surface-hover: #F1F5FF;
+
+  /* Text Colors */
+  --text-primary: #1E3A8A;
+  /* Deep royal blue */
+  --text-secondary: #475569;
+  /* Slate gray */
+  --text-muted: #94A3B8;
+  --text-inverse: #FFFFFF;
+
+  /* Logo Colors */
+  --primary: #4F6EF7;
+  /* Main logo blue */
+  --primary-hover: #3B5BEE;
+  --primary-light: #E8EEFF;
+
+  /* Secondary Accent (from logo outline) */
+  --secondary: #8A6F6F;
+  /* Soft taupe/brown */
+  --secondary-light: #F4EFEE;
+
+  /* Premium Accent Colors */
+  --accent: #7C3AED;
+  /* Elegant violet */
+  --accent-light: #F3E8FF;
+
+  --accent-primary: var(--primary);
+  /* Maintain tailwind mapping */
+
+  /* Luxury Gold Accent */
+  --gold: #F4B400;
+  --gold-hover: #E09A00;
+
+  /* Status Colors */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  --favorite: #FF2D55;
+  --favorite-light: rgba(255, 45, 85, 0.08);
+
+  /* Borders */
+  --border-color: #DCE5FF;
+  --border-strong: #C7D2FE;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg,
+      #4F6EF7 0%,
+      #6D8BFF 50%,
+      #7C3AED 100%);
+
+  --gradient-hero: linear-gradient(135deg,
+      #F8FAFF 0%,
+      #EEF3FF 50%,
+      #FDF2FF 100%);
+
+  --gradient-card: linear-gradient(135deg,
+      rgba(79, 110, 247, 0.04),
+      rgba(124, 58, 237, 0.03));
+
+  --gradient-gold: linear-gradient(135deg,
+      #F4B400,
+      #FFD95A);
+
+  /* Shadows */
+  --shadow-sm: 0 4px 12px rgba(79, 110, 247, 0.08);
+  --shadow-md: 0 10px 30px rgba(79, 110, 247, 0.12);
+  --shadow-lg: 0 20px 50px rgba(79, 110, 247, 0.16);
+
+  --shadow-custom: var(--shadow-md);
+  /* Maintain tailwind mapping */
+
+  /* Glow Effects */
+  --glow-primary: 0 0 25px rgba(79, 110, 247, 0.20);
+  --glow-accent: 0 0 25px rgba(124, 58, 237, 0.18);
+  --glow-gold: 0 0 20px rgba(244, 180, 0, 0.20);
+
+  /* Navbar */
+  --navbar-bg: rgba(255, 255, 255, 0.85);
+  --navbar-border: rgba(220, 229, 255, 0.8);
+
+  /* Footer */
+  --footer-bg: #F1F5FF;
+
+  /* Retain original for tailwind */
+  --foreground: #1E3A8A;
+  --card: #FFFFFF;
+  --card-foreground: #1E3A8A;
+  --border: #DCE5FF;
+  --primary-foreground: #FFFFFF;
+  --muted: #EEF3FF;
+  --muted-foreground: #475569;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
+  --color-card-background: var(--card-background);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border-color: var(--border-color);
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-hover: var(--accent-hover);
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-favorite: var(--favorite);
+  --color-favorite-light: var(--favorite-light);
+  --shadow-custom: var(--shadow-custom);
+
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --radius-xl: var(--radius);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide scrollbar for grid views but allow scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Fix browser autofill styling to respect the active theme */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--background) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
