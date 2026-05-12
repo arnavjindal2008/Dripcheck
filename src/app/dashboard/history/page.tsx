@@ -98,37 +98,41 @@ export default function HistoryPage() {
     }
   };
 
-  const filteredOutfits = savedOutfits.filter(o => {
-    // 1. Favorite filter
-    if (filter === "favorites" && !o.favorite) return false;
+  const filteredOutfits = useMemo(() => {
+    return savedOutfits.filter(o => {
+      // 1. Favorite filter
+      if (filter === "favorites" && !o.favorite) return false;
 
-    const items = [o.top, o.bottom, o.shoes].filter(Boolean) as ClothingItem[];
+      const items = [o.top, o.bottom, o.shoes].filter(Boolean) as ClothingItem[];
 
-    // 2. Weather filter (An outfit matches if ALL its pieces are compatible)
-    if (selectedWeather !== "all") {
-      const allPiecesMatch = items.every(item => {
-        const itemSeasons = item.weather ? item.weather.split(',').map(w => w.trim().toLowerCase()) : ["all"];
-        return itemSeasons.includes("all") || itemSeasons.includes(selectedWeather.toLowerCase());
-      });
-      if (!allPiecesMatch) return false;
-    }
+      // 2. Weather filter (An outfit matches if ANY of its pieces are compatible, or pieces are 'all')
+      if (selectedWeather !== "all") {
+        const matchesWeather = items.some(item => {
+          const itemSeasons = (item.weather || "all").split(',').map(w => w.trim().toLowerCase());
+          return itemSeasons.includes("all") || itemSeasons.includes(selectedWeather.toLowerCase());
+        });
+        if (!matchesWeather) return false;
+      }
 
-    // 3. Category/Occasion filter (Based on the top's category)
-    if (selectedCategory !== "all" && o.top) {
-      const topCat = o.top.category?.toLowerCase() || "all";
-      const matchesCategory = topCat === "all" || topCat === selectedCategory.toLowerCase();
-      if (!matchesCategory) return false;
-    }
+      // 3. Category/Occasion filter (Checks all pieces in the look)
+      if (selectedCategory !== "all") {
+        const matchesCategory = items.some(item => {
+          const itemCat = (item.category || "all").toLowerCase().trim();
+          return itemCat === "all" || itemCat === selectedCategory.toLowerCase();
+        });
+        if (!matchesCategory) return false;
+      }
 
-    return true;
-  });
+      return true;
+    });
+  }, [savedOutfits, filter, selectedWeather, selectedCategory]);
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 pb-20">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-8">
         <div>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-text-primary uppercase tracking-tighter">Saved Outfits</h1>
-          <p className="text-text-muted mt-2 font-medium text-base sm:text-lg">Your curated collection of styles.</p>
+          <p className="text-text-muted mt-1 font-medium text-xs sm:text-sm">Your curated collection of styles.</p>
         </div>
       </div>
 
@@ -167,8 +171,8 @@ export default function HistoryPage() {
           </div>
         </div>
 
-        {/* Categories Row (Desktop remains same, Mobile is scrollable row) */}
-        <div className="flex overflow-x-auto no-scrollbar -mx-1 px-1 sm:mx-0 sm:px-0 items-end gap-3 flex-1 pb-1 lg:pb-0">
+        {/* Categories Row (Responsive Wrapping Layout) */}
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 flex-1">
           {/* Desktop-only Favorite Toggle */}
           <div className="hidden lg:flex flex-col gap-2.5 shrink-0">
             <label className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em] ml-2 flex items-center gap-1.5">
@@ -192,9 +196,6 @@ export default function HistoryPage() {
 
           {/* Weather Filter */}
           <div className="shrink-0">
-            <div className="lg:hidden mb-1.5 ml-2">
-              <label className="text-[8px] font-black text-text-muted uppercase tracking-[0.2em]">Weather</label>
-            </div>
             <FilterDropdown
               label="Weather"
               icon={<CloudSun className="w-3.5 h-3.5" />}
@@ -206,9 +207,6 @@ export default function HistoryPage() {
 
           {/* Category/Occasion Filter */}
           <div className="shrink-0">
-            <div className="lg:hidden mb-1.5 ml-2">
-              <label className="text-[8px] font-black text-text-muted uppercase tracking-[0.2em]">Occasion</label>
-            </div>
             <FilterDropdown
               label="Occasion"
               icon={<Calendar className="w-3.5 h-3.5" />}
@@ -217,6 +215,13 @@ export default function HistoryPage() {
               options={dynamicCategoryOptions}
             />
           </div>
+          
+          <button
+            onClick={() => { setSelectedWeather('all'); setSelectedCategory('all'); setFilter('all'); }}
+            className="hidden lg:flex h-[52px] items-center px-6 bg-text-primary/5 hover:bg-text-primary/10 text-text-muted hover:text-text-primary text-[9px] font-black uppercase tracking-widest rounded-2xl border border-white/5 transition-all active:scale-95 ml-auto"
+          >
+            Reset
+          </button>
         </div>
 
         <div className="hidden lg:block w-px h-10 bg-white/5 mb-1.5" />
@@ -264,6 +269,12 @@ export default function HistoryPage() {
                   ? "Start generating outfits to build your history."
                   : "Try adjusting your filters to find your saved styles."}
               </p>
+              <button
+                onClick={() => { setSelectedWeather('all'); setSelectedCategory('all'); setFilter('all'); }}
+                className="mt-8 px-8 py-4 bg-text-primary text-background text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/5"
+              >
+                Reset All Filters
+              </button>
             </div>
           ) : (
             <div className={

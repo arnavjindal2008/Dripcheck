@@ -60,7 +60,7 @@ export default function OutfitsPage() {
     const finalOrder = ["all", ...presentStandard, ...presentCustom];
     return finalOrder.map(w => ({
       value: w,
-      label: w === "all" ? "Any Weather" : (w === "spring" ? "Spring/Fall" : w.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' '))
+      label: w === "all" ? "Any Weather" : (w === "spring" ? "Spring/Fall" : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
     }));
   }, [allClothes]);
 
@@ -108,16 +108,16 @@ export default function OutfitsPage() {
 
       // Filter by category and weather
       clothes = clothes.filter(item => {
-        // Match category: if selected is all, OR item is tagged all, OR they match exactly
-        const itemCat = item.category?.toLowerCase() || "all";
+        // Match category: if selected is all, OR item is tagged all, OR they match exactly (case-insensitive)
+        const itemCat = (item.category || "all").toLowerCase().trim();
         const matchesCategory = selectedCategory === "all" ||
           itemCat === "all" ||
-          itemCat === selectedCategory.toLowerCase();
+          itemCat === selectedCategory.toLowerCase().trim();
 
-        const itemSeasons = item.weather ? item.weather.split(',').map(w => w.trim().toLowerCase()) : ["all"];
+        const itemSeasons = (item.weather || "all").split(',').map(w => w.trim().toLowerCase());
         const matchesWeather = selectedWeather === "all" ||
           itemSeasons.includes("all") ||
-          itemSeasons.includes(selectedWeather.toLowerCase());
+          itemSeasons.includes(selectedWeather.toLowerCase().trim());
 
         return matchesCategory && matchesWeather;
       });
@@ -265,28 +265,34 @@ export default function OutfitsPage() {
           </Link>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto relative z-40">
-          <div className="flex overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 items-center gap-3 w-full sm:w-auto pb-2 sm:pb-0">
-            <div className="shrink-0">
-              <FilterDropdown
-                label="Occasion"
-                icon={<Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
-                value={selectedCategory}
-                onChange={setSelectedCategory}
-                options={dynamicCategoryOptions}
-              />
-            </div>
-
-            <div className="shrink-0">
-              <FilterDropdown
-                label="Weather"
-                icon={<CloudSun className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
-                value={selectedWeather}
-                onChange={setSelectedWeather}
-                options={dynamicWeatherOptions}
-              />
-            </div>
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto relative z-40">
+          <div className="shrink-0">
+            <FilterDropdown
+              label="Occasion"
+              icon={<Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
+              value={selectedCategory}
+              onChange={setSelectedCategory}
+              options={dynamicCategoryOptions}
+            />
           </div>
+
+          <div className="shrink-0">
+            <FilterDropdown
+              label="Weather"
+              icon={<CloudSun className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
+              value={selectedWeather}
+              onChange={setSelectedWeather}
+              options={dynamicWeatherOptions}
+            />
+          </div>
+          
+          <button
+            onClick={() => { setSelectedCategory('all'); setSelectedWeather('all'); }}
+            className={`hidden lg:flex h-[48px] sm:h-[52px] items-center px-4 bg-text-primary/5 hover:bg-text-primary/10 text-text-muted hover:text-text-primary rounded-2xl border border-white/5 transition-all active:scale-95 ${(selectedCategory !== 'all' || selectedWeather !== 'all') ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            title="Reset Filters"
+          >
+            <X className="w-4 h-4" />
+          </button>
 
           <button
             onClick={generateOutfits}

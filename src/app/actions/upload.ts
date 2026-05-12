@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 export async function uploadClothingItem(file: File, name: string, category: string, type: string, color: string, weather: string) {
   const supabase = await createClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
-  
+
   if (authError || !user) {
     throw new Error("You must be logged in to upload clothes.");
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import ClothingCard, { ClothingItem } from "@/components/ClothingCard";
 import { Filter, Search, CloudSun, Calendar, Shirt, Trash2, WashingMachine, X, MousePointer2, Loader2 } from "lucide-react";
 import FilterDropdown from "@/components/FilterDropdown";
@@ -12,14 +12,14 @@ import { getLogicalGroup } from "@/lib/clothingUtils";
 
 export default function WardrobeClient({ initialClothes }: { initialClothes: ClothingItem[] }) {
   const [clothes, setClothes] = useState(initialClothes);
-  const [prevInitialClothes, setPrevInitialClothes] = useState(initialClothes);
 
-  if (initialClothes !== prevInitialClothes) {
+  // Sync state with props when initialClothes changes (e.g. after server refresh)
+  useEffect(() => {
     setClothes(initialClothes);
-    setPrevInitialClothes(initialClothes);
-  }
+  }, [initialClothes]);
 
   const [activeFilter, setActiveFilter] = useState("all");
+  const [activeColor, setActiveColor] = useState("all");
   const [activeWeather, setActiveWeather] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,11 +32,17 @@ export default function WardrobeClient({ initialClothes }: { initialClothes: Clo
   const { toast } = useUIStore();
 
   const dynamicTypeOptions = useMemo(() => {
-    const types = new Set(clothes.map(c => getLogicalGroup(c)));
+    // Collect both logical groups and raw types for a comprehensive list
+    const groups = clothes.map(c => getLogicalGroup(c).toLowerCase().trim());
+    const rawTypes = clothes.map(c => (c.type || "").toLowerCase().trim()).filter(Boolean);
+    
+    const allTypes = new Set([...groups, ...rawTypes]);
     const standardOrder = ["top", "one-piece", "bottom", "shoes"];
     
-    const presentStandard = standardOrder.filter(t => types.has(t));
-    const presentCustom = Array.from(types).filter(t => !standardOrder.includes(t) && t !== "other").sort();
+    const presentStandard = standardOrder.filter(t => allTypes.has(t));
+    const presentCustom = Array.from(allTypes)
+      .filter(t => !standardOrder.includes(t) && t !== "other")
+      .sort();
     
     const finalOrder = ["all", ...presentStandard, ...presentCustom];
     
@@ -75,33 +81,61 @@ export default function WardrobeClient({ initialClothes }: { initialClothes: Clo
 
     return finalOrder.map(w => ({
       value: w,
-      label: w === "all" ? "All Weather" : (w === "spring" ? "Spring/Fall" : w.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' '))
+      label: w === "all" ? "All Weather" : (w === "spring" ? "Spring/Fall" : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    }));
+  }, [clothes]);
+
+  const dynamicColorOptions = useMemo(() => {
+    const colors = new Set(clothes.map(c => (c.color || "all").toLowerCase().trim()));
+    const standardOrder = ["black", "white", "blue", "red", "green", "grey", "beige"];
+    
+    const presentStandard = standardOrder.filter(c => colors.has(c));
+    const presentCustom = Array.from(colors).filter(c => !standardOrder.includes(c) && c !== "all").sort();
+    
+    const finalOrder = ["all", ...presentStandard, ...presentCustom];
+    
+    return finalOrder.map(c => ({
+      value: c,
+      label: c === "all" ? "All Colors" : c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()
     }));
   }, [clothes]);
 
   const filteredClothes = useMemo(() => {
     return clothes.filter(item => {
-      const itemGroup = getLogicalGroup(item);
-      const matchesType = activeFilter === "all" || itemGroup === activeFilter.toLowerCase();
+      // 1. Type Filter (Matches against both Group and specific Type)
+      const itemGroup = getLogicalGroup(item).toLowerCase().trim();
+      const itemType = (item.type || "").toLowerCase().trim();
+      const matchesType = activeFilter === "all" || 
+                          itemGroup === activeFilter.toLowerCase() || 
+                          itemType === activeFilter.toLowerCase();
       
-      const itemSeasons = item.weather ? item.weather.split(',').map(w => w.trim().toLowerCase()) : ["all"];
+      // 2. Weather/Season Filter
+      const itemSeasons = (item.weather || "all").split(',').map(w => w.trim().toLowerCase());
       const matchesWeather = activeWeather === "all" || 
                              itemSeasons.includes("all") || 
                              itemSeasons.includes(activeWeather.toLowerCase());
 
-      const itemCat = item.category?.toLowerCase() || "all";
+      // 3. Category/Occasion Filter
+      const itemCat = (item.category || "all").toLowerCase().trim();
       const matchesCategory = activeCategory === "all" || itemCat === activeCategory.toLowerCase();
 
-      const q = searchQuery.toLowerCase();
+      // 4. Color Filter
+      const itemColor = (item.color || "all").toLowerCase().trim();
+      const matchesColor = activeColor === "all" || itemColor === activeColor.toLowerCase();
+
+      // 5. Search Filter (Inclusive)
+      const q = searchQuery.toLowerCase().trim();
       const matchesSearch = !q ||
         (item.name || "").toLowerCase().includes(q) ||
-        item.color.toLowerCase().includes(q) ||
-        item.type.toLowerCase().includes(q) ||
-        (item.category || "").toLowerCase().includes(q);
+        itemColor.includes(q) ||
+        itemType.includes(q) ||
+        itemCat.includes(q) ||
+        itemSeasons.some(s => s.includes(q)) ||
+        itemGroup.includes(q);
         
-      return matchesType && matchesWeather && matchesCategory && matchesSearch;
+      return matchesType && matchesWeather && matchesCategory && matchesColor && matchesSearch;
     });
-  }, [clothes, activeFilter, activeWeather, activeCategory, searchQuery]);
+  }, [clothes, activeFilter, activeWeather, activeCategory, activeColor, searchQuery]);
 
   const handleDelete = (id: string) => {
     setClothes(prev => prev.filter(c => c.id !== id));
@@ -160,11 +194,11 @@ export default function WardrobeClient({ initialClothes }: { initialClothes: Clo
   return (
     <div className="space-y-10 pb-20">
       <div className="flex flex-col gap-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between flex-1 gap-4 sm:gap-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 flex-1">
             <div>
               <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-text-primary uppercase tracking-tighter">My Wardrobe</h1>
-              <p className="text-text-muted mt-1 sm:mt-2 font-medium text-sm sm:text-base">Your collection of style and drip.</p>
+              <p className="text-text-muted mt-1 sm:mt-1 font-medium text-xs sm:text-sm">Your collection of style and drip.</p>
             </div>
 
             <button
@@ -172,28 +206,28 @@ export default function WardrobeClient({ initialClothes }: { initialClothes: Clo
                 setIsSelectionMode(!isSelectionMode);
                 setSelectedIds(new Set());
               }}
-              className={`px-5 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest border transition-all flex items-center justify-center gap-2 ${isSelectionMode ? 'bg-text-primary text-background border-white shadow-xl scale-105' : 'bg-text-primary/5 text-text-muted border-border-color hover:border-border-color/20'}`}
+              className={`h-[48px] sm:h-[52px] px-6 rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest border transition-all flex items-center justify-center gap-2 ${isSelectionMode ? 'bg-text-primary text-background border-white shadow-xl scale-105' : 'bg-text-primary/5 text-text-muted border-border-color hover:border-white/20'}`}
             >
               {isSelectionMode ? <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <MousePointer2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
               {isSelectionMode ? "Cancel" : "Select Items"}
             </button>
           </div>
 
-          <div className="relative w-full sm:w-auto">
+          <div className="relative w-full lg:w-80">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-text-muted" />
             <input
               type="text"
               placeholder="Search clothes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-80 bg-text-primary/5 border border-border-color text-text-primary text-sm rounded-xl sm:rounded-2xl py-3 sm:py-4 pl-11 sm:pl-12 pr-5 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-all placeholder:text-text-primary/20 shadow-inner"
+              className="w-full h-[48px] sm:h-[52px] bg-text-primary/5 border border-border-color text-text-primary text-sm rounded-2xl pl-11 sm:pl-12 pr-5 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-all placeholder:text-text-primary/20"
             />
           </div>
         </div>
       </div>
 
-      <div className="space-y-6 relative z-40">
-        <div className="flex overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 items-center gap-3 sm:gap-4 pb-2 sm:pb-0">
+      <div className="space-y-6 relative z-50">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="shrink-0">
             <FilterDropdown
               label="Type"
@@ -211,6 +245,16 @@ export default function WardrobeClient({ initialClothes }: { initialClothes: Clo
               value={activeWeather}
               onChange={setActiveWeather}
               options={dynamicWeatherOptions}
+            />
+          </div>
+
+          <div className="shrink-0">
+            <FilterDropdown
+              label="Color"
+              icon={<Search className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
+              value={activeColor}
+              onChange={setActiveColor}
+              options={dynamicColorOptions}
             />
           </div>
 
@@ -254,7 +298,7 @@ export default function WardrobeClient({ initialClothes }: { initialClothes: Clo
             <p className="text-text-muted text-sm font-medium max-w-[200px] mx-auto">No items match your current vibe. Try broadning your search.</p>
           </div>
           <button
-            onClick={() => { setActiveFilter('all'); setActiveWeather('all'); setActiveCategory('all'); setSearchQuery(''); }}
+            onClick={() => { setActiveFilter('all'); setActiveWeather('all'); setActiveCategory('all'); setActiveColor('all'); setSearchQuery(''); }}
             className="px-8 py-4 bg-text-primary text-background text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/5"
           >
             Reset Filters

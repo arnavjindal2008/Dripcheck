@@ -30,21 +30,23 @@ export default function FilterDropdown({ label, icon, options, value, onChange }
     return () => document.removeEventListener("click", handleClickOutside, true);
   }, []);
 
+  const isActive = value !== "all" && value !== "";
   const selectedOption = options.find(opt => opt.value === value) || options[0] || { value: "", label: "Select..." };
 
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border ${
-          isOpen 
-            ? 'bg-text-primary text-background border-white shadow-xl' 
-            : 'bg-text-primary/5 border-border-color text-text-secondary hover:border-white/30 hover:text-text-primary shadow-inner'
-        }`}
+        className={`flex items-center gap-3 px-5 h-[48px] sm:h-[52px] rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border ${isOpen
+            ? 'bg-text-primary text-background border-white shadow-xl'
+            : isActive
+              ? 'bg-text-primary/20 border-text-primary/40 text-text-primary shadow-[0_0_15px_rgba(255,255,255,0.05)]'
+              : 'bg-text-primary/5 border-border-color text-text-secondary hover:border-white/30 hover:text-text-primary shadow-inner'
+          }`}
       >
         <span className="opacity-50">{icon}</span>
         <span className="flex-1 text-left min-w-[80px]">
-          {label}: <span className={isOpen ? "text-black" : "text-text-primary"}>{selectedOption.label}</span>
+          {label}: <span className={isOpen ? "text-background" : "text-text-primary"}>{selectedOption.label}</span>
         </span>
         <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
       </button>
@@ -52,23 +54,24 @@ export default function FilterDropdown({ label, icon, options, value, onChange }
       {isOpen && (
         <div className="absolute top-full left-0 mt-2 w-64 bg-background-secondary/95 backdrop-blur-2xl border border-border-color rounded-2xl shadow-custom overflow-hidden z-[100] animate-in fade-in zoom-in-95 duration-200 origin-top-left">
           <div className="p-2 space-y-1">
-            {options.map((option) => (
+            {options.length > 0 ? options.map((option) => (
               <button
                 key={option.value}
                 onClick={() => {
                   onChange(option.value);
                   setIsOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all ${
-                  value === option.value
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all ${value === option.value
                     ? 'bg-text-primary text-background'
                     : 'text-text-muted hover:bg-text-primary/5 hover:text-text-primary'
-                }`}
+                  }`}
               >
                 {option.label}
                 {value === option.value && <Check className="w-3.5 h-3.5" />}
               </button>
-            ))}
+            )) : (
+              <div className="px-4 py-3 text-[10px] text-text-muted font-bold uppercase tracking-widest text-center">No Options</div>
+            )}
           </div>
         </div>
       )}
