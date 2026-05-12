@@ -57,8 +57,8 @@ export default function UploadPage() {
   const handleOpenCamera = async () => {
     if (cameraPermission === "prompt") {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: "environment" } 
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" }
         });
         stream.getTracks().forEach(track => {
           track.enabled = false;
@@ -72,7 +72,7 @@ export default function UploadPage() {
         return;
       }
     }
-    
+
     if (fileInputRef.current) {
       fileInputRef.current.setAttribute("capture", "environment");
       // Delay to ensure hardware release on Android
@@ -172,18 +172,13 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-6 pb-24 px-4 sm:px-0">
-      <div className="text-center sm:text-left space-y-2">
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-text-primary uppercase leading-tight italic">
-          Add to <span className="text-transparent bg-clip-text bg-[image:var(--gradient-primary)]">Wardrobe</span>
-        </h1>
-        <p className="text-text-muted font-medium text-base sm:text-xl max-w-2xl">Elevate your collection with high-fidelity studio uploads.</p>
+    <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 pb-20">
+      <div>
+        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-text-primary uppercase tracking-tighter">Add to Wardrobe</h1>
+        <p className="text-text-muted mt-2 font-medium text-sm sm:text-lg">Upload a photo to expand your collection.</p>
       </div>
 
-      <div className="bg-card-background/40 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] sm:rounded-[3.5rem] p-6 sm:p-12 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] relative overflow-hidden group/container">
-        {/* Abstract Background Decoration */}
-        <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-accent/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="bg-card-background/60 dark:bg-card-background/40 backdrop-blur-3xl border border-border-color dark:border-white/10 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 shadow-2xl relative overflow-hidden group/container">
         {!preview ? (
           <div className="space-y-6">
             {cameraPermission === "denied" && (
@@ -194,7 +189,7 @@ export default function UploadPage() {
             )}
 
             <div
-              className={`relative flex flex-col items-center justify-center p-4 sm:p-16 border-2 border-dashed rounded-[2rem] sm:rounded-[3rem] transition-all duration-500 ${isDragging ? "border-primary bg-primary/5 scale-[1.01]" : "border-white/5 bg-black/20 hover:border-white/20"
+              className={`relative flex flex-col items-center justify-center p-4 sm:p-16 border-2 border-dashed rounded-[2rem] sm:rounded-[3rem] transition-all duration-500 ${isDragging ? "border-primary bg-primary/5 scale-[1.01]" : "border-border-color dark:border-white/5 bg-transparent hover:border-primary/30 dark:hover:border-white/20"
                 }`}
               onDragOver={onDragOver}
               onDragLeave={onDragLeave}
@@ -204,34 +199,34 @@ export default function UploadPage() {
                 <button
                   type="button"
                   onClick={handleOpenCamera}
-                  className="relative group flex flex-col items-center gap-6 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-white/20 rounded-[2rem] p-8 sm:p-12 transition-all duration-500 overflow-hidden"
+                  className="relative group flex flex-col items-center gap-6 bg-white dark:bg-white/[0.03] hover:bg-white dark:hover:bg-white/[0.08] border border-border-color dark:border-white/5 hover:border-primary/40 rounded-[2rem] p-8 sm:p-12 transition-all duration-500 overflow-hidden shadow-sm hover:shadow-xl active:scale-95"
                 >
                   {/* Hover Glow */}
-                  <div className="absolute inset-0 bg-[image:var(--gradient-primary)] opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                   
-                  <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-[1.5rem] sm:rounded-[2rem] bg-[image:var(--gradient-primary)] flex items-center justify-center text-white shadow-[0_0_30px_rgba(79,110,247,0.4)] group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                  <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-[1.5rem] sm:rounded-[2rem] bg-gradient-to-br from-[#4F6EF7] to-[#7C3AED] flex items-center justify-center text-white shadow-[0_10px_30px_rgba(79,110,247,0.4)] group-hover:scale-110 transition-all duration-500">
                     <Camera className="w-8 h-8 sm:w-12 sm:h-12" />
                   </div>
-                  <div className="text-center space-y-2">
-                    <p className="text-xl sm:text-2xl font-black text-text-primary uppercase tracking-tighter">Camera</p>
-                    <p className="text-xs sm:text-sm text-text-muted font-bold uppercase tracking-widest opacity-60">Snap Studio</p>
+                  <div className="text-center">
+                    <p className="text-lg sm:text-2xl font-black text-text-primary uppercase tracking-tighter">Camera</p>
+                    <p className="text-[10px] sm:text-xs text-text-muted font-bold uppercase tracking-widest mt-1">Snap Studio</p>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleOpenGallery}
-                  className="relative group flex flex-col items-center gap-6 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-white/20 rounded-[2rem] p-8 sm:p-12 transition-all duration-500 overflow-hidden"
+                  className="relative group flex flex-col items-center gap-6 bg-white dark:bg-white/[0.03] hover:bg-white dark:hover:bg-white/[0.08] border border-border-color dark:border-white/5 hover:border-[#FF2D55]/40 rounded-[2rem] p-8 sm:p-12 transition-all duration-500 overflow-hidden shadow-sm hover:shadow-xl active:scale-95"
                 >
                   {/* Hover Glow */}
-                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-[#FF2D55]/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                  <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-[1.5rem] sm:rounded-[2rem] bg-white/10 flex items-center justify-center text-text-primary border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-3 transition-all duration-500">
+                  <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-[1.5rem] sm:rounded-[2rem] bg-gradient-to-br from-[#FF2D55] to-[#FF5E7D] flex items-center justify-center text-white shadow-[0_10px_30px_rgba(255,45,85,0.4)] group-hover:scale-110 transition-all duration-500">
                     <ImageIcon className="w-8 h-8 sm:w-12 sm:h-12" />
                   </div>
-                  <div className="text-center space-y-2">
-                    <p className="text-xl sm:text-2xl font-black text-text-primary uppercase tracking-tighter">Gallery</p>
-                    <p className="text-xs sm:text-sm text-text-muted font-bold uppercase tracking-widest opacity-60">Import File</p>
+                  <div className="text-center">
+                    <p className="text-lg sm:text-2xl font-black text-text-primary uppercase tracking-tighter">Gallery</p>
+                    <p className="text-[10px] sm:text-xs text-text-muted font-bold uppercase tracking-widest mt-1">Import File</p>
                   </div>
                 </button>
               </div>
@@ -241,7 +236,7 @@ export default function UploadPage() {
                   Drag & Drop Studio
                 </p>
               </div>
-              
+
               <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
             </div>
           </div>
@@ -281,7 +276,7 @@ export default function UploadPage() {
                 <label className="text-xs font-black text-text-muted ml-2 uppercase tracking-[0.3em]">Type</label>
                 {!isCustomType ? (
                   <div className="relative group">
-                    <select value={type} onChange={(e) => { if (e.target.value === "custom") { setIsCustomType(true); setType(""); } else { setType(e.target.value); } }} className="w-full bg-black/40 border border-white/5 hover:border-white/20 rounded-[1.5rem] py-5 px-8 text-text-primary appearance-none font-bold cursor-pointer transition-all focus:ring-2 focus:ring-primary/20 focus:outline-none" required>
+                    <select value={type} onChange={(e) => { if (e.target.value === "custom") { setIsCustomType(true); setType(""); } else { setType(e.target.value); } }} className="w-full bg-background-secondary/60 dark:bg-black/40 border border-border-color dark:border-white/5 hover:border-primary/20 dark:hover:border-white/20 rounded-[1.5rem] py-5 px-8 text-text-primary appearance-none font-bold cursor-pointer transition-all focus:ring-2 focus:ring-primary/20 focus:outline-none" required>
                       <option value="" disabled className="bg-background">Select Style...</option>
                       <option value="top" className="bg-background">Top</option><option value="bottom" className="bg-background">Bottom</option><option value="one-piece" className="bg-background">One-piece</option><option value="shoes" className="bg-background">Shoes</option><option value="custom" className="bg-background">Other / Custom...</option>
                     </select>
@@ -297,14 +292,14 @@ export default function UploadPage() {
                       value={type}
                       onChange={(e) => setType(e.target.value)}
                       placeholder="Enter custom type..."
-                      className="w-full bg-black/40 border border-white/10 rounded-[1.5rem] py-5 px-8 text-text-primary font-bold placeholder:text-text-muted/30 focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
+                      className="w-full bg-background-secondary/60 dark:bg-black/40 border border-border-color dark:border-white/10 rounded-[1.5rem] py-5 px-8 text-text-primary font-bold placeholder:text-text-muted/30 focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
                       autoFocus
                       required
                     />
                     <datalist id="clothing-types">
                       {CLOTHING_TYPES.map(t => <option key={t} value={t} />)}
                     </datalist>
-                    <button type="button" onClick={() => setIsCustomType(false)} className="absolute right-6 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary bg-white/5 p-1.5 rounded-full"><X className="w-4 h-4" /></button>
+                    <button type="button" onClick={() => setIsCustomType(false)} className="absolute right-6 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary bg-background p-1.5 rounded-full shadow-sm"><X className="w-4 h-4" /></button>
                   </div>
                 )}
               </div>
@@ -313,7 +308,7 @@ export default function UploadPage() {
                 <label className="text-xs font-black text-text-muted ml-2 uppercase tracking-[0.3em]">Color</label>
                 {!isCustomColor ? (
                   <div className="relative group">
-                    <select value={color} onChange={(e) => { if (e.target.value === "custom") { setIsCustomColor(true); setColor(""); } else { setColor(e.target.value); } }} className="w-full bg-black/40 border border-white/5 hover:border-white/20 rounded-[1.5rem] py-5 px-8 text-text-primary appearance-none font-bold cursor-pointer transition-all focus:ring-2 focus:ring-primary/20 focus:outline-none" required>
+                    <select value={color} onChange={(e) => { if (e.target.value === "custom") { setIsCustomColor(true); setColor(""); } else { setColor(e.target.value); } }} className="w-full bg-background-secondary/60 dark:bg-black/40 border border-border-color dark:border-white/5 hover:border-primary/20 dark:hover:border-white/20 rounded-[1.5rem] py-5 px-8 text-text-primary appearance-none font-bold cursor-pointer transition-all focus:ring-2 focus:ring-primary/20 focus:outline-none" required>
                       <option value="" disabled className="bg-background">Select Tone...</option>
                       <option value="black" className="bg-background">Black</option><option value="white" className="bg-background">White</option><option value="blue" className="bg-background">Blue</option><option value="red" className="bg-background">Red</option><option value="green" className="bg-background">Green</option><option value="custom" className="bg-background">Other / Custom...</option>
                     </select>
@@ -329,19 +324,19 @@ export default function UploadPage() {
                       value={color}
                       onChange={(e) => setColor(e.target.value)}
                       placeholder="Enter custom color..."
-                      className="w-full bg-black/40 border border-white/10 rounded-[1.5rem] py-5 px-8 text-text-primary font-bold placeholder:text-text-muted/30 focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
+                      className="w-full bg-background-secondary/60 dark:bg-black/40 border border-border-color dark:border-white/10 rounded-[1.5rem] py-5 px-8 text-text-primary font-bold placeholder:text-text-muted/30 focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
                       autoFocus
                       required
                     />
                     <datalist id="clothing-colors">
                       {CLOTHING_COLORS.map(c => <option key={c} value={c} />)}
                     </datalist>
-                    <button type="button" onClick={() => setIsCustomColor(false)} className="absolute right-6 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary bg-white/5 p-1.5 rounded-full"><X className="w-4 h-4" /></button>
+                    <button type="button" onClick={() => setIsCustomColor(false)} className="absolute right-6 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary bg-background p-1.5 rounded-full shadow-sm"><X className="w-4 h-4" /></button>
                   </div>
                 )}
               </div>
 
-              <div className="relative group flex items-center justify-between p-6 sm:p-8 bg-text-primary/[0.03] dark:bg-white/[0.03] rounded-[2rem] sm:rounded-3xl border border-border-color/30 sm:col-span-2 hover:bg-text-primary/[0.05] dark:hover:bg-white/[0.05] transition-all duration-500 overflow-hidden shadow-sm hover:shadow-xl">
+              <div className="relative group flex items-center justify-between p-6 sm:p-8 bg-white dark:bg-white/[0.03] rounded-[2rem] sm:rounded-3xl border border-border-color dark:border-white/5 sm:col-span-2 hover:bg-background-secondary/50 dark:hover:bg-white/[0.05] transition-all duration-500 overflow-hidden shadow-sm hover:shadow-xl">
                 <div className="flex items-center gap-4 sm:gap-6">
                   <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shrink-0 shadow-inner group-hover:scale-110 transition-transform duration-500">
                     <Sparkles className="w-6 h-6 sm:w-7 sm:h-7" />
@@ -349,25 +344,23 @@ export default function UploadPage() {
                   <div className="space-y-1 sm:space-y-1.5">
                     <div className="flex items-center gap-3 flex-wrap">
                       <p className="text-text-primary font-black text-base sm:text-xl uppercase tracking-tight leading-none">Remove Background</p>
-                      <span className="inline-flex items-center justify-center px-2.5 py-1 bg-text-primary/10 text-text-primary text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] rounded-lg border border-text-primary/10 leading-none h-4.5 sm:h-5">AI Studio</span>
+                      <span className="inline-flex items-center justify-center px-2.5 py-1 bg-white dark:bg-primary/20 text-primary dark:text-primary-foreground text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] rounded-lg border border-primary/20 dark:border-primary/20 leading-none h-4.5 sm:h-5 shadow-[0_2px_10px_rgba(79,110,247,0.1)] dark:shadow-[0_0_10px_rgba(79,110,247,0.2)]">AI Studio</span>
                     </div>
                     <p className="text-text-muted text-[10px] sm:text-sm font-medium leading-none">Isolate the item automatically</p>
                   </div>
                 </div>
-                <button 
-                  type="button" 
-                  onClick={() => setShouldRemoveBg(!shouldRemoveBg)} 
-                  className={`w-14 h-8 sm:w-16 sm:h-9 rounded-full transition-all duration-500 relative border-2 shrink-0 ${
-                    shouldRemoveBg 
-                      ? 'bg-[image:var(--gradient-primary)] dark:bg-none dark:bg-white border-transparent dark:border-white shadow-[0_0_15px_rgba(79,110,247,0.4)] dark:shadow-[0_0_20px_rgba(255,255,255,0.4)]' 
-                      : 'bg-text-primary/10 border-border-color'
-                  }`}
+                <button
+                  type="button"
+                  onClick={() => setShouldRemoveBg(!shouldRemoveBg)}
+                  className={`w-14 h-8 sm:w-16 sm:h-9 rounded-full transition-all duration-500 relative border-2 shrink-0 ${shouldRemoveBg
+                      ? 'bg-[image:var(--gradient-primary)] dark:bg-none dark:bg-white border-transparent dark:border-white shadow-[0_0_15px_rgba(79,110,247,0.4)] dark:shadow-[0_0_20px_rgba(255,255,255,0.4)]'
+                      : 'bg-background-secondary dark:bg-white/10 border-border-color dark:border-white/10'
+                    }`}
                 >
-                  <div className={`absolute top-0.5 sm:top-1 w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full transition-all duration-500 shadow-xl ${
-                    shouldRemoveBg 
-                      ? 'left-6.5 sm:left-8 bg-white dark:bg-black' 
+                  <div className={`absolute top-0.5 sm:top-1 w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full transition-all duration-500 shadow-xl ${shouldRemoveBg
+                      ? 'left-6.5 sm:left-8 bg-white dark:bg-black'
                       : 'left-0.5 sm:left-1 bg-text-muted'
-                  }`} />
+                    }`} />
                 </button>
               </div>
 
