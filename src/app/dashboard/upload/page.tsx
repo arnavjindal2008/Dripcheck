@@ -37,7 +37,18 @@ export default function UploadPage() {
       navigator.permissions.query({ name: 'camera' as PermissionName })
         .then((result) => {
           setCameraPermission(result.state);
-          result.onchange = () => setCameraPermission(result.state);
+          // If already granted, ensure capture is set for Android/Mobile
+          if (result.state === "granted") {
+            fileInputRef.current?.setAttribute("capture", "environment");
+          }
+          result.onchange = () => {
+            setCameraPermission(result.state);
+            if (result.state === "granted") {
+              fileInputRef.current?.setAttribute("capture", "environment");
+            } else {
+              fileInputRef.current?.removeAttribute("capture");
+            }
+          };
         })
         .catch(() => setCameraPermission("unsupported"));
     }
@@ -45,12 +56,29 @@ export default function UploadPage() {
 
   const handleRequestCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      stream.getTracks().forEach(track => track.stop());
+      // Use environment facing mode to avoid front camera flip on Android
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: "environment" } 
+      });
+      
+      // Stop all tracks and clear stream reference to fully release hardware
+      stream.getTracks().forEach(track => {
+        track.enabled = false;
+        track.stop();
+      });
+      
       setCameraPermission("granted");
-      fileInputRef.current?.setAttribute("capture", "environment");
-      fileInputRef.current?.click();
+      
+      if (fileInputRef.current) {
+        fileInputRef.current.setAttribute("capture", "environment");
+        // Tiny delay to ensure Android releases the camera hardware from getUserMedia
+        // before the file input tries to claim it.
+        setTimeout(() => {
+          fileInputRef.current?.click();
+        }, 150);
+      }
     } catch (err) {
+      console.error("Camera request error:", err);
       setCameraPermission("denied");
       toast("Camera access denied. Please enable it in your browser settings.", "error");
     }
