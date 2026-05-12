@@ -54,33 +54,38 @@ export default function UploadPage() {
     }
   }, []);
 
-  const handleRequestCamera = async () => {
-    try {
-      // Use environment facing mode to avoid front camera flip on Android
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: "environment" } 
-      });
-      
-      // Stop all tracks and clear stream reference to fully release hardware
-      stream.getTracks().forEach(track => {
-        track.enabled = false;
-        track.stop();
-      });
-      
-      setCameraPermission("granted");
-      
-      if (fileInputRef.current) {
-        fileInputRef.current.setAttribute("capture", "environment");
-        // Tiny delay to ensure Android releases the camera hardware from getUserMedia
-        // before the file input tries to claim it.
-        setTimeout(() => {
-          fileInputRef.current?.click();
-        }, 150);
+  const handleOpenCamera = async () => {
+    if (cameraPermission === "prompt") {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: "environment" } 
+        });
+        stream.getTracks().forEach(track => {
+          track.enabled = false;
+          track.stop();
+        });
+        setCameraPermission("granted");
+      } catch (err) {
+        console.error("Camera request error:", err);
+        setCameraPermission("denied");
+        toast("Camera access denied. Please enable it in your browser settings.", "error");
+        return;
       }
-    } catch (err) {
-      console.error("Camera request error:", err);
-      setCameraPermission("denied");
-      toast("Camera access denied. Please enable it in your browser settings.", "error");
+    }
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.setAttribute("capture", "environment");
+      // Delay to ensure hardware release on Android
+      setTimeout(() => {
+        fileInputRef.current?.click();
+      }, 150);
+    }
+  };
+
+  const handleOpenGallery = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.removeAttribute("capture");
+      fileInputRef.current.click();
     }
   };
 
@@ -167,13 +172,18 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 pb-20">
-      <div>
-        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-text-primary uppercase tracking-tighter">Add to Wardrobe</h1>
-        <p className="text-text-muted mt-2 font-medium text-sm sm:text-lg">Upload a photo to expand your collection.</p>
+    <div className="max-w-4xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-6 pb-24 px-4 sm:px-0">
+      <div className="text-center sm:text-left space-y-2">
+        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-text-primary uppercase leading-tight italic">
+          Add to <span className="text-transparent bg-clip-text bg-[image:var(--gradient-primary)]">Wardrobe</span>
+        </h1>
+        <p className="text-text-muted font-medium text-base sm:text-xl max-w-2xl">Elevate your collection with high-fidelity studio uploads.</p>
       </div>
 
-      <div className="bg-text-primary/5 backdrop-blur-lg border border-border-color rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+      <div className="bg-card-background/40 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] sm:rounded-[3.5rem] p-6 sm:p-12 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] relative overflow-hidden group/container">
+        {/* Abstract Background Decoration */}
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-accent/10 rounded-full blur-[100px] pointer-events-none" />
         {!preview ? (
           <div className="space-y-6">
             {cameraPermission === "denied" && (
@@ -184,27 +194,54 @@ export default function UploadPage() {
             )}
 
             <div
-              className={`flex flex-col items-center justify-center p-6 sm:p-20 border-2 border-dashed rounded-[1.5rem] sm:rounded-[2.5rem] transition-all cursor-pointer ${isDragging ? "border-white bg-text-primary/10 scale-[1.02]" : "border-border-color bg-background/40 hover:border-white/30"
+              className={`relative flex flex-col items-center justify-center p-4 sm:p-16 border-2 border-dashed rounded-[2rem] sm:rounded-[3rem] transition-all duration-500 ${isDragging ? "border-primary bg-primary/5 scale-[1.01]" : "border-white/5 bg-black/20 hover:border-white/20"
                 }`}
-              onClick={() => {
-                if (cameraPermission === "prompt") {
-                  handleRequestCamera();
-                } else {
-                  fileInputRef.current?.click();
-                }
-              }}
               onDragOver={onDragOver}
               onDragLeave={onDragLeave}
               onDrop={onDrop}
             >
-              <div className="flex gap-3 sm:gap-4 mb-6 sm:mb-8">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-text-primary/10 flex items-center justify-center text-text-primary border border-border-color shadow-lg"><Camera className="w-5 h-5 sm:w-7 sm:h-7" /></div>
-                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-text-primary/10 flex items-center justify-center text-text-primary border border-border-color shadow-lg"><ImageIcon className="w-5 h-5 sm:w-7 sm:h-7" /></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 w-full max-w-2xl mx-auto relative z-10">
+                <button
+                  type="button"
+                  onClick={handleOpenCamera}
+                  className="relative group flex flex-col items-center gap-6 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-white/20 rounded-[2rem] p-8 sm:p-12 transition-all duration-500 overflow-hidden"
+                >
+                  {/* Hover Glow */}
+                  <div className="absolute inset-0 bg-[image:var(--gradient-primary)] opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
+                  
+                  <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-[1.5rem] sm:rounded-[2rem] bg-[image:var(--gradient-primary)] flex items-center justify-center text-white shadow-[0_0_30px_rgba(79,110,247,0.4)] group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <Camera className="w-8 h-8 sm:w-12 sm:h-12" />
+                  </div>
+                  <div className="text-center space-y-2">
+                    <p className="text-xl sm:text-2xl font-black text-text-primary uppercase tracking-tighter">Camera</p>
+                    <p className="text-xs sm:text-sm text-text-muted font-bold uppercase tracking-widest opacity-60">Snap Studio</p>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleOpenGallery}
+                  className="relative group flex flex-col items-center gap-6 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-white/20 rounded-[2rem] p-8 sm:p-12 transition-all duration-500 overflow-hidden"
+                >
+                  {/* Hover Glow */}
+                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
+
+                  <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-[1.5rem] sm:rounded-[2rem] bg-white/10 flex items-center justify-center text-text-primary border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-3 transition-all duration-500">
+                    <ImageIcon className="w-8 h-8 sm:w-12 sm:h-12" />
+                  </div>
+                  <div className="text-center space-y-2">
+                    <p className="text-xl sm:text-2xl font-black text-text-primary uppercase tracking-tighter">Gallery</p>
+                    <p className="text-xs sm:text-sm text-text-muted font-bold uppercase tracking-widest opacity-60">Import File</p>
+                  </div>
+                </button>
               </div>
-              <p className="text-lg sm:text-2xl font-black text-text-primary text-center uppercase tracking-tight">
-                {cameraPermission === "prompt" ? "Enable Camera & Upload" : "Tap to Upload"}
-              </p>
-              <p className="text-[10px] sm:text-sm text-text-muted text-center mt-2 sm:mt-3 font-medium px-4">JPEG, PNG — High quality photos work best</p>
+
+              <div className="mt-10 text-center opacity-40 group-hover/container:opacity-100 transition-opacity duration-700">
+                <p className="text-[10px] sm:text-xs text-text-muted font-black uppercase tracking-[0.4em]">
+                  Drag & Drop Studio
+                </p>
+              </div>
+              
               <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
             </div>
           </div>
@@ -240,56 +277,66 @@ export default function UploadPage() {
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Vintage Denim Jacket" className="w-full bg-background border border-border-color rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 text-text-primary placeholder:text-text-muted/40 focus:outline-none focus:border-text-primary/30 focus:ring-1 focus:ring-text-primary/30 transition-all font-medium text-sm sm:text-base" required />
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-black text-text-muted ml-1 uppercase tracking-widest">Type</label>
+              <div className="space-y-4">
+                <label className="text-xs font-black text-text-muted ml-2 uppercase tracking-[0.3em]">Type</label>
                 {!isCustomType ? (
-                  <select value={type} onChange={(e) => { if (e.target.value === "custom") { setIsCustomType(true); setType(""); } else { setType(e.target.value); } }} className="w-full bg-background border border-border-color rounded-2xl py-4 px-6 text-text-primary appearance-none font-medium cursor-pointer focus:border-text-primary/30 transition-all" required>
-                    <option value="" disabled>Select Type...</option>
-                    <option value="top">Top</option><option value="bottom">Bottom</option><option value="one-piece">One-piece</option><option value="shoes">Shoes</option><option value="custom">Other / Custom...</option>
-                  </select>
+                  <div className="relative group">
+                    <select value={type} onChange={(e) => { if (e.target.value === "custom") { setIsCustomType(true); setType(""); } else { setType(e.target.value); } }} className="w-full bg-black/40 border border-white/5 hover:border-white/20 rounded-[1.5rem] py-5 px-8 text-text-primary appearance-none font-bold cursor-pointer transition-all focus:ring-2 focus:ring-primary/20 focus:outline-none" required>
+                      <option value="" disabled className="bg-background">Select Style...</option>
+                      <option value="top" className="bg-background">Top</option><option value="bottom" className="bg-background">Bottom</option><option value="one-piece" className="bg-background">One-piece</option><option value="shoes" className="bg-background">Shoes</option><option value="custom" className="bg-background">Other / Custom...</option>
+                    </select>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted group-hover:text-text-primary transition-colors">
+                      <Plus className="w-5 h-5 rotate-45" />
+                    </div>
+                  </div>
                 ) : (
-                  <div className="relative">
+                  <div className="relative animate-in slide-in-from-left-4">
                     <input
                       type="text"
                       list="clothing-types"
                       value={type}
                       onChange={(e) => setType(e.target.value)}
-                      placeholder="Type custom category..."
-                      className="w-full bg-background border border-border-color rounded-2xl py-4 px-6 text-text-primary font-medium placeholder:text-text-muted/40"
+                      placeholder="Enter custom type..."
+                      className="w-full bg-black/40 border border-white/10 rounded-[1.5rem] py-5 px-8 text-text-primary font-bold placeholder:text-text-muted/30 focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
                       autoFocus
                       required
                     />
                     <datalist id="clothing-types">
                       {CLOTHING_TYPES.map(t => <option key={t} value={t} />)}
                     </datalist>
-                    <button type="button" onClick={() => setIsCustomType(false)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"><X className="w-5 h-5" /></button>
+                    <button type="button" onClick={() => setIsCustomType(false)} className="absolute right-6 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary bg-white/5 p-1.5 rounded-full"><X className="w-4 h-4" /></button>
                   </div>
                 )}
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-black text-text-muted ml-1 uppercase tracking-widest">Color</label>
+              <div className="space-y-4">
+                <label className="text-xs font-black text-text-muted ml-2 uppercase tracking-[0.3em]">Color</label>
                 {!isCustomColor ? (
-                  <select value={color} onChange={(e) => { if (e.target.value === "custom") { setIsCustomColor(true); setColor(""); } else { setColor(e.target.value); } }} className="w-full bg-background border border-border-color rounded-2xl py-4 px-6 text-text-primary appearance-none font-medium cursor-pointer focus:border-text-primary/30 transition-all" required>
-                    <option value="" disabled>Select Color...</option>
-                    <option value="black">Black</option><option value="white">White</option><option value="blue">Blue</option><option value="red">Red</option><option value="green">Green</option><option value="custom">Other / Custom...</option>
-                  </select>
+                  <div className="relative group">
+                    <select value={color} onChange={(e) => { if (e.target.value === "custom") { setIsCustomColor(true); setColor(""); } else { setColor(e.target.value); } }} className="w-full bg-black/40 border border-white/5 hover:border-white/20 rounded-[1.5rem] py-5 px-8 text-text-primary appearance-none font-bold cursor-pointer transition-all focus:ring-2 focus:ring-primary/20 focus:outline-none" required>
+                      <option value="" disabled className="bg-background">Select Tone...</option>
+                      <option value="black" className="bg-background">Black</option><option value="white" className="bg-background">White</option><option value="blue" className="bg-background">Blue</option><option value="red" className="bg-background">Red</option><option value="green" className="bg-background">Green</option><option value="custom" className="bg-background">Other / Custom...</option>
+                    </select>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted group-hover:text-text-primary transition-colors">
+                      <Plus className="w-5 h-5 rotate-45" />
+                    </div>
+                  </div>
                 ) : (
-                  <div className="relative">
+                  <div className="relative animate-in slide-in-from-right-4">
                     <input
                       type="text"
                       list="clothing-colors"
                       value={color}
                       onChange={(e) => setColor(e.target.value)}
-                      placeholder="Type custom color..."
-                      className="w-full bg-background border border-border-color rounded-2xl py-4 px-6 text-text-primary font-medium placeholder:text-text-muted/40"
+                      placeholder="Enter custom color..."
+                      className="w-full bg-black/40 border border-white/10 rounded-[1.5rem] py-5 px-8 text-text-primary font-bold placeholder:text-text-muted/30 focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
                       autoFocus
                       required
                     />
                     <datalist id="clothing-colors">
                       {CLOTHING_COLORS.map(c => <option key={c} value={c} />)}
                     </datalist>
-                    <button type="button" onClick={() => setIsCustomColor(false)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"><X className="w-5 h-5" /></button>
+                    <button type="button" onClick={() => setIsCustomColor(false)} className="absolute right-6 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary bg-white/5 p-1.5 rounded-full"><X className="w-4 h-4" /></button>
                   </div>
                 )}
               </div>
@@ -378,10 +425,12 @@ export default function UploadPage() {
               </div>
             </div>
 
-            <button type="submit" disabled={!type || !color || !category} className="w-full rounded-[2rem] px-4 py-6 bg-text-primary text-background font-black text-xs sm:text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:bg-text-primary/90 active:scale-95 transition-all disabled:opacity-30 shadow-2xl mt-12 group overflow-hidden relative">
-              <div className="absolute inset-0 bg-white/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-              <span className="relative z-10">Save to Wardrobe</span>
-              <Plus className="w-4 h-4 sm:w-5 sm:h-5 relative z-10 group-hover:rotate-90 transition-transform duration-500" />
+            <button type="submit" disabled={!type || !color || !category} className="w-full rounded-[2.5rem] px-4 py-8 bg-[image:var(--gradient-primary)] text-white font-black text-sm sm:text-lg uppercase tracking-[0.4em] flex items-center justify-center gap-6 hover:shadow-[0_20px_50px_rgba(79,110,247,0.4)] active:scale-95 transition-all disabled:opacity-30 disabled:hover:shadow-none shadow-2xl mt-16 group relative overflow-hidden">
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-700" />
+              <span className="relative z-10 flex items-center gap-4">
+                Save to Wardrobe
+                <Plus className="w-5 h-5 sm:w-7 sm:h-7 group-hover:rotate-180 transition-transform duration-700" />
+              </span>
             </button>
           </form>
         )}
