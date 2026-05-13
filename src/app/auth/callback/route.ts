@@ -15,19 +15,13 @@ export async function GET(request: Request) {
 
   const supabase = await createClient();
 
-  // Check if we already have a session (prevents double-exchange errors)
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) {
-    return NextResponse.redirect(new URL(next, siteUrl));
-  }
-
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
       return NextResponse.redirect(new URL(next, siteUrl));
     } else {
-      // If code exchange fails but we somehow have a user now, just proceed
+      // If code exchange fails, check if we actually have a session now
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         return NextResponse.redirect(new URL(next, siteUrl));

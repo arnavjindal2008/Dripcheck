@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Shirt, Sparkles, WashingMachine } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -7,10 +9,10 @@ import { ClothingItem } from "@/components/ClothingCard";
 export default async function DashboardPage() {
   const supabase = await createClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (!user || authError) redirect("/login");
 
-  const [clothesResponse, outfitsResponse] = await Promise.all([
+  const [clothesResponse, outfitsResponse, profileResponse] = await Promise.all([
     supabase
       .from("clothes")
       .select("*")
@@ -18,15 +20,24 @@ export default async function DashboardPage() {
     supabase
       .from("outfits")
       .select("id")
-      .eq("user_id", user.id)
+      .eq("user_id", user.id),
+    supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .maybeSingle()
   ]);
 
   const safeClothes = clothesResponse.data ?? [];
   const safeOutfits = outfitsResponse.data ?? [];
+  const profile = profileResponse.data;
 
   const totalItems = safeClothes.length;
   const laundryItems = safeClothes.filter((item: ClothingItem) => item.status === "laundry").length;
   const savedOutfits = safeOutfits.length;
+
+  const displayName = profile?.full_name || user.user_metadata?.full_name || user.user_metadata?.name || "there";
+  const firstName = displayName.split(" ")[0];
 
   const categoryCount = safeClothes.reduce((acc: Record<string, number>, item: ClothingItem) => {
     if (item.category) acc[item.category] = (acc[item.category] || 0) + 1;
@@ -51,7 +62,7 @@ export default async function DashboardPage() {
     <div className="space-y-10">
       <div>
         <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-text-primary">
-          Hey {user.user_metadata?.full_name?.split(' ')[0] || 'there'}!
+          Hey {firstName}!
         </h1>
         <p className="text-text-muted mt-2 text-base sm:text-lg font-medium">Your wardrobe is looking sharp today.</p>
       </div>

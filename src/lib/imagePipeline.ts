@@ -22,6 +22,10 @@ export async function processImage(
     }
 
     if (removeBg) {
+      setLoading(true, "AI Studio is preparing...", "AI Studio");
+      // Add requested 1 second time gap
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setLoading(true, "Removing background...", "AI Studio");
       const formData = new FormData();
       formData.append('image_file', finalFile);
@@ -42,6 +46,9 @@ export async function processImage(
         console.warn("BG Removal error:", bgError);
         toast("Background removal failed, uploading original.", "info");
       }
+      
+      // Post-process delay for stability
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
 
     // 2. Autocrop and Compress result

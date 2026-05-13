@@ -25,8 +25,8 @@ export default function ProfileForm({
 }) {
   const [isPending, startTransition] = useTransition();
   const [isUploading, setIsUploading] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || user.user_metadata?.avatar_url || "");
-  const [fullName, setFullName] = useState(profile?.full_name || user.user_metadata?.full_name || "");
+  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture || "");
+  const [fullName, setFullName] = useState(profile?.full_name || user.user_metadata?.full_name || user.user_metadata?.name || "");
   const [age, setAge] = useState(profile?.age || "");
   const [address, setAddress] = useState(profile?.address || "");
   const [phone, setPhone] = useState(profile?.phone || "");

@@ -23,18 +23,25 @@ export async function updateProfile(data: {
     .from("profiles")
     .select("id")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
-  const profileData = {
+  const profileData: any = {
     id: user.id,
-    full_name: data.full_name,
-    username: data.username,
-    avatar_url: data.avatar_url,
-    age: data.age ? parseInt(data.age.toString()) : null,
-    address: data.address,
-    bio: data.bio,
-    phone: data.phone,
   };
+
+  if (data.full_name !== undefined) profileData.full_name = data.full_name;
+  if (data.username !== undefined) profileData.username = data.username;
+  if (data.avatar_url !== undefined) profileData.avatar_url = data.avatar_url;
+  if (data.address !== undefined) profileData.address = data.address;
+  if (data.bio !== undefined) profileData.bio = data.bio;
+  if (data.phone !== undefined) profileData.phone = data.phone;
+  
+  if (data.age !== undefined) {
+    profileData.age = data.age ? parseInt(data.age.toString()) : null;
+    if (profileData.age !== null && isNaN(profileData.age)) {
+      profileData.age = null;
+    }
+  }
 
   let error;
   if (existingProfile) {
@@ -62,7 +69,7 @@ export async function updateProfile(data: {
   }
 
   revalidatePath("/dashboard/profile");
-  revalidatePath("/dashboard/layout");
+  revalidatePath("/dashboard", "layout");
   
   return { success: true };
 }
