@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { ArrowRight, Sparkles, Shirt, WashingMachine } from "lucide-react";
 
-export default function Home() {
+import { createClient } from "@/lib/supabase/server";
+
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 sm:p-12 relative overflow-hidden transition-colors duration-300">
 
@@ -32,19 +37,31 @@ export default function Home() {
 
         {/* Call to Actions */}
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-700">
-          <Link
-            href="/signup"
-            className="group flex items-center justify-center gap-2 bg-[image:var(--gradient-primary)] text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 hover:scale-[1.02] transition-all active:scale-95 shadow-[var(--shadow-lg)]"
-          >
-            Get Started
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Link>
-          <Link
-            href="/login"
-            className="flex items-center justify-center gap-2 bg-card-background text-text-primary border border-border-color backdrop-blur-md px-8 py-4 rounded-xl font-bold text-lg hover:bg-text-primary/5 hover:scale-[1.02] transition-all active:scale-95"
-          >
-            Log In
-          </Link>
+          {user ? (
+            <Link
+              href="/dashboard"
+              className="group flex items-center justify-center gap-3 bg-[image:var(--gradient-primary)] text-white px-10 py-5 rounded-2xl font-black text-xl hover:opacity-90 hover:scale-[1.02] transition-all active:scale-95 shadow-[var(--shadow-lg)] border border-white/10"
+            >
+              Go to Dashboard
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/signup"
+                className="group flex items-center justify-center gap-2 bg-[image:var(--gradient-primary)] text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 hover:scale-[1.02] transition-all active:scale-95 shadow-[var(--shadow-lg)]"
+              >
+                Get Started
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                href="/login"
+                className="flex items-center justify-center gap-2 bg-card-background text-text-primary border border-border-color backdrop-blur-md px-8 py-4 rounded-xl font-bold text-lg hover:bg-text-primary/5 hover:scale-[1.02] transition-all active:scale-95"
+              >
+                Log In
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Feature Grid */}
