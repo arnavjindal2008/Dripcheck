@@ -6,6 +6,7 @@ import { ArrowLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { signup } from "@/app/actions/auth";
 import { useUIStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
+import GoogleAuthButton from "@/components/GoogleAuthButton";
 
 export default function SignUp() {
   const { setLoading } = useUIStore();
@@ -46,6 +47,16 @@ export default function SignUp() {
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold tracking-tight text-text-primary">Create Account</h1>
           <p className="text-text-muted mt-2">Start building your digital wardrobe</p>
+        </div>
+
+        {/* Google Sign-Up Button */}
+        <GoogleAuthButton label="Continue with Google" />
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-4">
+          <div className="flex-1 h-px bg-border-color" />
+          <span className="text-xs text-text-muted font-medium uppercase tracking-widest">or</span>
+          <div className="flex-1 h-px bg-border-color" />
         </div>
 
         {error && (
@@ -129,7 +140,7 @@ export default function SignUp() {
           </form>
         )}
 
-        <div className="mt-10 text-center text-sm text-text-muted">
+        <div className="mt-8 text-center text-sm text-text-muted">
           Already have an account?{" "}
           <Link href="/login" className="text-text-primary font-semibold hover:underline">
             Log in

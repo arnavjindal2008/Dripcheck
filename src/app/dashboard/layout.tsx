@@ -36,7 +36,19 @@ export default async function DashboardLayout({ children }: { children: React.Re
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
             ) : (
-              <span className="text-[10px] font-black text-text-muted uppercase">{profile?.username?.substring(0, 2) || "ME"}</span>
+              <div
+                className="w-full h-full flex items-center justify-center select-none"
+                style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)' }}
+              >
+                <span className="text-[11px] font-black text-white uppercase">
+                  {(user?.user_metadata?.full_name || profile?.username || user?.email || "?")
+                    .split(" ")
+                    .map((n: string) => n[0])
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase() || "?"}
+                </span>
+              </div>
             )}
           </a>
         </div>

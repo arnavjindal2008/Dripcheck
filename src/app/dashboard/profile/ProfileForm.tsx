@@ -163,12 +163,26 @@ export default function ProfileForm({
               <div className="relative group/avatar">
                 {avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={avatarUrl} alt="Avatar" className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-border-color/20 shadow-2xl transition-transform duration-500 group-hover/avatar:scale-105" />
-                ) : (
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-background/50 border border-border-color flex items-center justify-center shadow-inner">
-                    <User className="w-8 h-8 sm:w-10 sm:h-10 text-text-primary/10" />
-                  </div>
-                )}
+                  <img
+                    src={avatarUrl}
+                    alt="Avatar"
+                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-white/10 shadow-2xl transition-transform duration-500 group-hover/avatar:scale-105"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden'); }}
+                  />
+                ) : null}
+                <div
+                  className={`${avatarUrl ? 'hidden' : ''} w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center border-2 border-white/10 shadow-2xl transition-transform duration-500 group-hover/avatar:scale-105 select-none`}
+                  style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)' }}
+                >
+                  <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">
+                    {(fullName || user?.email || "?")
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .slice(0, 2)
+                      .join("")
+                      .toUpperCase() || "?"}
+                  </span>
+                </div>
                 {isUploading && (
                   <div className="absolute inset-0 bg-background/60 backdrop-blur-sm rounded-full flex items-center justify-center animate-in fade-in">
                     <Loader2 className="w-6 h-6 animate-spin text-text-primary" />

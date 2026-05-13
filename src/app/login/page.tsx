@@ -7,6 +7,7 @@ import { login } from "@/app/actions/auth";
 import { useUIStore } from "@/lib/store";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import GoogleAuthButton from "@/components/GoogleAuthButton";
 
 export default function Login() {
   return (
@@ -73,6 +74,16 @@ function LoginForm() {
           <p className="text-text-muted mt-2">Log in to your digital wardrobe</p>
         </div>
 
+        {/* Google Sign-In Button */}
+        <GoogleAuthButton label="Continue with Google" />
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 h-px bg-border-color" />
+          <span className="text-xs text-text-muted font-medium uppercase tracking-widest">or</span>
+          <div className="flex-1 h-px bg-border-color" />
+        </div>
+
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-3">
             <label className="text-sm font-semibold text-text-secondary ml-1">Email</label>
@@ -126,7 +137,7 @@ function LoginForm() {
           </button>
         </form>
 
-        <div className="mt-10 text-center text-sm text-text-muted">
+        <div className="mt-8 text-center text-sm text-text-muted">
           Don&apos;t have an account?{" "}
           <Link href="/signup" className="text-text-primary font-semibold hover:underline">
             Sign up
