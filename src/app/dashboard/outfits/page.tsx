@@ -200,9 +200,9 @@ export default function OutfitsPage() {
         }
       }
 
-      // Shuffle and slice each group separately
-      const shuffledOnePiece = onePieceGenerated.sort(() => Math.random() - 0.5).slice(0, 15);
-      const shuffledTwoPiece = twoPieceGenerated.sort(() => Math.random() - 0.5).slice(0, 25);
+      // Shuffle each group separately
+      const shuffledOnePiece = onePieceGenerated.sort(() => Math.random() - 0.5);
+      const shuffledTwoPiece = twoPieceGenerated.sort(() => Math.random() - 0.5);
 
       // Maintain One-Piece outfits at the top of the list, followed by Two-Piece outfits
       const combinedResults = [...shuffledOnePiece, ...shuffledTwoPiece];
